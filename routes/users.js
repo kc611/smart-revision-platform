@@ -1,62 +1,70 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const passport = require('passport');
+const User = require("../models/User");
+const passport = require("passport");
 
 
-router.get('/login', (req, res) => {
-    res.render('login_register', { title: "Login System" });
+router.get("/login", (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.render("login_register", { title: "Login System" });
+  } else {
+    res.send("User needs to logout");
+  }
 });
 
-router.post('/login',(req,res,next)=>{
-    console.log(req.body.email_input);
-    console.log(req.body.password_input);
-    passport.authenticate('local',{
-        successRedirect:'/dashboard',
-        failureRedirect:'/users/login',
-        failureFlash:true
-    })(req,res,next);
+router.post("/login", (req, res, next) => {
+
+  if (!req.isAuthenticated()) {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        User.findOne({ username: req.body.username }, (err, foundUser) => {
+          if (err) {
+            res.send("Something went wrong, couldn't log you in");
+          } else if (foundUser) {
+            res.send("Incorrect password");
+          } else {
+            res.send("Couldn't find a user with the given email address");
+          }
+        });
+      } else {
+        req.logIn(user, function (err) {
+          if (err) {
+            return next(err);
+          } else {
+            res.send(`Welcome back, ${user.username}!`);
+          }
+        });
+      }
+    })(req, res, next);
+  }
 });
 
-router.post('/register',(req,res)=>{
-    var curr_email = req.body.email_input;
-    var curr_password = req.body.password_input;
-    User.findOne({email:curr_email}).then(user=>{
-        if(user){
-            //User Exists
-            res.send("ALready registered");
-        }else{
-        //TODO: Hash password
-        //     bcrypt.genSalt(10, (err,salt)=>
-        //     bcrypt.hash(curr_password, salt,(err,hash)=>{
-        //         if(err) throw err;
-        //         curr_password = hash;
-        //     })
-        // );
-        
+router.post("/register", (req, res) => {
+  var curr_username = req.body.username;
+  var curr_password = req.body.password;
+  const newUser = new User({
+    username: curr_username,
+  });
 
-            const newUser = new User({
-                email:curr_email,
-                password:curr_password
-            });
-            console.log(newUser);
-
-            newUser.save().then(user=>{
-                //TODO: autologin here
-                res.redirect('/dashboard');
-            }).catch(err=> console.log(err))
-
-            res.redirect("/dashboard");
-        }
-    });
+  User.register(newUser, curr_password, (err, user) => {
+    if (err) {
+      res.send(err.message);
+    } else {
+      console.log("Registered user");
+      res.redirect("/users/login");
+    }
+  });
 });
 
 // Logout
-router.get('/logout', (req, res) => {
-    req.logout();
-    console.log("Logged out");
-    res.redirect('/users/login');
-  });
+router.get("/logout", (req, res) => {
+  req.logout();
+  console.log("Logged out");
+  res.redirect("/users/login");
+});
 
 module.exports = router;
