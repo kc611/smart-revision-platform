@@ -11,6 +11,11 @@ h2,
 h3 {
   font-family: "Kaushan Script", cursive;
 }
+
+form{
+  padding: 0 3em;
+}
+
 .myform {
   position: relative;
   display: -ms-flexbox;
@@ -32,6 +37,7 @@ h3 {
 }
 .mybtn {
   border-radius: 25px;
+  width: 100%;
 }
 
 .login-or {
@@ -58,11 +64,12 @@ h3 {
   margin-bottom: 0px !important;
 }
 .google {
-  color: #666;
   width: 100%;
   height: 40px;
   text-align: center;
   outline: none;
+  color: white;
+  background-color: #ea4335;
   border: 1px solid lightgrey;
 }
 form .error {
@@ -72,3 +79,18 @@ form .error {
   display: none;
 }
 
+
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+  color: #495057;
+  border: 1px solid transparent;
+  border-radius: 25px;
+
+  transition: all .1s ease-in-out;
+}
+
+.form-label-group input {
+  height: auto;
+  border-radius: 15px;
+}

@@ -42,11 +42,15 @@
         </form>
     </div>
 </div> -->
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+
+
+
 <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<link rel="stylesheet" href="/static/login_page_style.css">
-<script src="/public/login_page_utilities.js"></script>
+      <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+      <link rel="stylesheet" href="/static/login_page_style.css">
+      <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+      <script src="/static/login_page_utilities.js"></script>
+
 
 <body>
     <div class="container">
@@ -61,16 +65,22 @@
 					</div>
                    <form action="/users/login" method="POST" name="login">
                            <div class="form-label-group">
-                              <label for="exampleInputEmail1">Username</label>
+                              
                               <input type="username" name="username"  class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter your username">
-                           </div>
+                              
+                            </div>
                            <div class="form-label-group">
-                              <label for="exampleInputEmail1">Password</label>
                               <input type="password" name="password" id="password"  class="form-control" aria-describedby="emailHelp" placeholder="Enter Password">
-                           </div>
+    
+                            </div>
 
+                           <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">Remember password</label>
+                          </div>
+                          
                            <div class="col-md-12 text-center ">
-                              <button type="submit" class=" btn btn-block btn-primary tx-tfm">Login</button>
+                              <button type="submit" class=" btn mybtn btn-primary tx-tfm">Login</button>
                            </div>
                            <div class="col-md-12 ">
                               <div class="login-or">
@@ -81,7 +91,7 @@
                            <div class="col-md-12 mb-3">
                               <p class="text-center">
                                  <a href="javascript:void();" class="google btn mybtn"><i class="fa fa-google-plus">
-                                 </i> Signup using Google
+                                 </i> Signin using Google
                                  </a>
                               </p>
                            </div>
