@@ -1,0 +1,46 @@
+<%- include('header') -%> 
+
+<div class="text-center center-div" id="login">
+    <div class="container w-25 border py-5">
+        <div class="title pb-5">
+            <h2 class="font-weight-bold">
+                Login System
+                
+            </h2>
+            <span>Login for the existing user</span>
+        </div>
+        <form action="/users/login" method="POST">
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" name="email_input">
+                <small class="form-text text-muted text-left">Register Email Adress</small>
+            </div>
+            <div class="form-group pb-3">
+                <input type="password" class="form-control" name="password_input" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+</div>
+<div class="text-center center-div" id="register">
+    <div class="container w-25 border py-5">
+        <div class="title pb-5">
+            <h2 class="font-weight-bold">
+                Register System
+                
+            </h2>
+            <span>Register new user</span>
+        </div>
+        <form action="/users/register" method="POST">
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" name="email_input">
+                <small class="form-text text-muted text-left">Register Email Adress</small>
+            </div>
+            <div class="form-group pb-3">
+                <input type="password" class="form-control" name="password_input" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+</div>
+<%- include('footer') -%>
+
