@@ -8,12 +8,11 @@ router.get("/login", (req, res) => {
   if (!req.isAuthenticated()) {
     res.render("login_register", { title: "Login System" });
   } else {
-    res.send("User needs to logout");
+    res.redirect("/dashboard")
   }
 });
 
 router.post("/login", (req, res, next) => {
-
   if (!req.isAuthenticated()) {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
@@ -35,11 +34,13 @@ router.post("/login", (req, res, next) => {
           if (err) {
             return next(err);
           } else {
-            res.send(`Welcome back, ${user.username}!`);
+            res.redirect("/dashboard");
           }
         });
       }
     })(req, res, next);
+
+    
   }
 });
 
