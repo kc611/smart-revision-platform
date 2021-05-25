@@ -1,0 +1,18 @@
+<div class="quiz-prep-notice" id="quiz-prep-notice"><%= status %></div>
+
+<script>
+  $(document).ready(function () {
+    var curr_div = $("#quiz-prep-notice");
+    $(function () {
+      $.ajax({
+        type: "POST",
+        url: "/api/build-quiz",
+        // data: post_data,
+        contentType: 'application/json'
+      }).done(function( data ) {
+          console.log( "Sample of data:", data );
+          curr_div.html(data.message);
+      });
+    });
+  });
+</script>

@@ -1,0 +1,32 @@
+<h2>Quizzes here</h2>
+<form action="/quizzer/make-quiz" method="POST" class="quiz-form">
+  <h2>Make a quiz</h2>
+  <div>
+    <label for="num_questions">Choose number of questions:</label>
+    <input
+      type="number"
+      id="num_questions"
+      name="num_questions"
+      min="1"
+      max="90"
+    />
+  </div>
+  <div>
+    <label for="time">Choose time for quiz in minutes:</label>
+    <input
+      type="number"
+      id="quiz_time"
+      name="quiz_time"
+      min="1"
+      max="180"
+    />
+  </div>
+  <label for="subject">Choose a subject:</label>
+  <select id="subject" name="subject">
+    <option value="physics">Physics</option>
+    <option value="dsa">Data Structures and Algorithms</option>
+    <option value="maths">Maths</option>
+    <option value="dbms">DBMS</option>
+  </select>
+  <input type="submit" value="Make a Quiz" class="btn solid" />
+</form>

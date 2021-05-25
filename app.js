@@ -11,7 +11,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/User");
 const app = express();
-
+const expressLayouts = require('express-ejs-layouts');
 // require('./config/passport')(passport);
 
 const PORT = process.env.PORT || 3000;
@@ -21,6 +21,8 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
+app.use(expressLayouts);
+app.set('layout', './landing_base');
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
@@ -45,7 +47,9 @@ app.use(passport.session());
 app.use(flash());
 
 app.use("/", require("./routes/index"));
+app.use("/api",require("./routes/api"));
 app.use("/users", require("./routes/users"));
+app.use("/quizzer",require("./routes/quizzes"));
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
 app.get("*", (req, res) => {

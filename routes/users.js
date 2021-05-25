@@ -6,7 +6,7 @@ const passport = require("passport");
 
 router.get("/login", (req, res) => {
   if (!req.isAuthenticated()) {
-    res.render("login_register", { title: "Login System" });
+    res.render("login_register", { title: "Login System" ,layout:'./login_register_base'});
   } else {
     res.redirect("/dashboard")
   }
@@ -49,6 +49,7 @@ router.post("/register", (req, res) => {
   var curr_password = req.body.password;
   const newUser = new User({
     username: curr_username,
+    organization:"ABVIIITM"
   });
 
   User.register(newUser, curr_password, (err, user) => {

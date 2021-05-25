@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <title>Dashboard</title>
+
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
+    />
+    <link rel="stylesheet" href="/static/dashboard/dashboard_styles.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="nav-toggle" />
+
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <h2><span class="lab la-accusoft"></span> <span>Smart Revise</span></h2>
+      </div>
+      <div class="sidebar-menu">
+        <ul>
+          <li>
+            <a href="dashboard">
+              <button class="sidebar-btn">
+                <span><span class="las la-igloo"></span>Dashboard</span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="user-profile">
+              <button class="sidebar-btn" href="">
+                <span><span class="las la-users"></span>User</span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="quizzes">
+              <button class="sidebar-btn">
+                <span><span class="las la-clipboard-list"></span>Quizzes</span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="suggestions">
+              <button class="sidebar-btn" href="">
+                <span><span class="las la-user-circle"></span>Suggestions</span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <button class="sidebar-btn" href="">
+                <span><span class="las la-receipt"></span>Inventory</span>
+              </button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <header>
+        <h1>
+          <label for="nav-toggle">
+            <span class="las la-bars"></span>
+          </label>
+          Dashboard
+        </h1>
+
+        <div class="search-wrapper">
+          <span class="las la-search"></span>
+          <input type="search" placeholder="Search Here" />
+        </div>
+
+        <div class="user-wrapper">
+          <img
+            src="/static/dashboard/img.jpg"
+            width="30px"
+            height="30px"
+            alt=""
+          />
+          <div>
+            <h4>John Doe</h4>
+            <small>Student at IIITM</small>
+          </div>
+        </div>
+      </header>
+
+      <main><%- body %></main>
+    </div>
+  </body>
+</html>

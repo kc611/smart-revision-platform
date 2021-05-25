@@ -54,34 +54,34 @@
   font-size: 1.1rem;
 }
 
-.sidebar-menu a.active {
-  background: #fff;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  color: var(--main-color);
-  border-radius: 30px 30px 30px 30px;
+.sidebar-btn-active {
+  border: 2px solid #fff;
 }
 
-.white-border-btn {
+.sidebar-btn {
+  padding-left: 1rem;
   width: 80%;
-  background-color: #5995fd;
-  background: none;
-  border: 2px solid #fff;
+  background-color: var(--main-color);
+  border: none;
   outline: none;
   height: 49px;
+  text-align: left;
   border-radius: 49px;
   color: #fff;
-  text-transform: uppercase;
-  font-weight: 600;
+  font-size: 1.1rem;
   margin: 10px 0;
   cursor: pointer;
-  transition: 0.5s;
-  font-size: 0.8rem;
+
 }
 
-.sidebar-menu a span:first-child {
-  font-size: 1.5rem;
+.sidebar-btn span:first-child {
+  font-size: 1.2rem;
   padding-right: 1rem;
+}
+
+.sidebar-btn:hover{
+  border: 2px solid #fff;
+  text-align: center;
 }
 
 #nav-toggle:checked + .sidebar {
