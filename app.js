@@ -21,6 +21,10 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
+app.use(express.json({
+  type: ['application/json', 'text/plain']
+}));
+
 app.use(expressLayouts);
 app.set('layout', './landing_base');
 app.set("view engine", "ejs");

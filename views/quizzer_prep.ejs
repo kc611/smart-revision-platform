@@ -1,18 +1,36 @@
 <div class="quiz-prep-notice" id="quiz-prep-notice"><%= status %></div>
 
+<form action="/quizzer/quiz" method="GET">
+  <input type="hidden" name="quizcode" class="hidden-quizcode-input" id="quizcode">
+  <input type="submit" value="Start Quiz" class="btn solid" />
+</form>
+
 <script>
-  $(document).ready(function () {
-    var curr_div = $("#quiz-prep-notice");
-    $(function () {
-      $.ajax({
-        type: "POST",
-        url: "/api/build-quiz",
-        // data: post_data,
-        contentType: 'application/json'
-      }).done(function( data ) {
-          console.log( "Sample of data:", data );
-          curr_div.html(data.message);
-      });
-    });
+  var curr_div = document.getElementById("quiz-prep-notice");
+  var data = {
+    "num_questions": "<%= num_questions %>",
+    "quiz_time" :"<%= quiz_time %>",
+    "subject" :"<%= subject %>",
+  };
+
+  var quiz_id;
+
+  fetch('/api/build-quiz', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    })
+    .then(response => response.json())
+    .then(json => {
+        
+        curr_div.innerHTML = json.message;
+        //Show instructions and stuf here and change the loding animaion to done
+
+      quiz_id = json.quiz_code;
+      document.getElementById('quizcode').value=quiz_id; 
   });
+
+  
 </script>
