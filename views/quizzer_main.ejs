@@ -1,1 +1,81 @@
-<h2>Quizzes here</h2>
+
+<div class="fixed bg-blue-400 shadow-md w-full px-10 py-2 flex justify-between items-center">
+    <div class="text-2xl text-white"><%= quiz_data.subject %> Quiz </div>
+    <div class="justify-around px-10">
+        <div class="text-white"> Time Left:</div>
+        <div class="text-xl text-white" id="quiz-timer"></div>
+    </div>
+</div>
+
+<div class="bg-blue-300 flex flex-wrap h-full w-screen overflow-scroll p-20">
+  <div class="bg-white shadow-md rounded-3xl p-5 w-4/5 m-auto">
+    <form action="/quizzer/submit" method="POST" id="submit-form">
+      
+        
+      <% for (var i=0; i < quiz_data.questions.length; i++) {%>
+
+      <div class="bg-blue-100 shadow-md rounded-3xl p-5 w-4/5 mx-auto my-6">
+        <h2 class="question"><%= quiz_data.questions[i].question %></h2>
+        <ul>
+          <li>
+            <input
+              value="option-1"
+              type="radio"
+              name="answer<%= i %>"
+              id="ans1"
+              class="answer<%= i %>"
+            />
+            <label for="ans1" id="option1"
+              ><%= quiz_data.questions[i].options[0] %></label
+            >
+          </li>
+          <li>
+            <input
+              value="option-2"
+              type="radio"
+              name="answer<%= i %>"
+              id="ans2"
+              class="answer<%= i %>"
+            />
+            <label for="ans2" id="option2"
+              ><%= quiz_data.questions[i].options[1] %></label
+            >
+          </li>
+          <li>
+            <input
+              value="option-3"
+              type="radio"
+              name="answer<%= i %>"
+              id="ans3"
+              class="answer<%= i %>"
+            />
+            <label for="ans3" id="option3"
+              ><%= quiz_data.questions[i].options[2] %></label
+            >
+          </li>
+          <li>
+            <input
+              value="option-4"
+              type="radio"
+              name="answer<%= i %>"
+              id="ans4"
+              class="answer<%= i %>"
+            />
+            <label for="ans4" id="option4"
+              ><%= quiz_data.questions[i].options[3] %></label
+            >
+          </li>
+        </ul>
+      </div>
+
+      <% } %>
+
+      <div class="mx-auto w-min"><input type="submit" value="Submit" /></div>
+      
+      <!-- <div id="showScore" class="scoreArea"> </div> -->
+    </form>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/static/tailwind/quizzer/main_quiz_styles.css" />
+<script src="/static/quizzer/main_quizzer.js"></script>

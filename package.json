@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "postcss public/quizzer/main_quiz_tailwind.css -o public/tailwind/quizzer/main_quiz_styles.css",
     "start": "nodemon server.js"
   },
   "repository": {
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/kc611/smart-revision-platform#readme",
   "dependencies": {
+    "autoprefixer": "^10.2.6",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -34,7 +36,9 @@
     "nodemon": "^2.0.7",
     "passport": "^0.4.1",
     "passport-local-mongoose": "^6.1.0",
+    "postcss-cli": "^8.3.1",
     "serve-favicon": "^2.5.0",
+    "tailwindcss": "^2.1.2",
     "uuid": "^8.3.2"
   }
 }
