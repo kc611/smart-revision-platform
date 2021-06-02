@@ -13,109 +13,68 @@ router.post("/make-quiz", (req, res) => {
 
 //This the the node that renders the page for quiz prep
 router.get("/prep-quiz", (req, res) => {
-  res.render("quizzer_prep", { layout: "./quizzer_layout",status:"please wait",num_questions: req.query.num_questions, quiz_time: req.query.quiz_time, subject: req.query.subject});
+  res.render("quizzer_prep", { layout: "./quizzer_layout",status:"please wait",num_questions: req.query.num_questions, quiz_time: req.query.quiz_time, subject: req.query.subject,quiz_name: req.query.quiz_name});
 });
 
 router.get("/quiz", async (req, res) => {
   var quiz_code = req.query.quizcode.split("\"")[3];
 
-  // await client.connect();
-  // //TODO: get username dynamcally
-  // const user_database = client.db("admin123");
-  // const quiz_collection = user_database.collection("quizzes");
-  // const query = {
-  //   _id:new mongo.ObjectID(quiz_code)
-  // }
-
-  // const curr_quiz = await quiz_collection.findOne(query);
-  // console.log(curr_quiz);
-  curr_quiz = {
-    _id: "60af752352dbc4190f5ea09f",
-    created_on: "2021-05-27T16:02:03.791Z",
-    num_questions: 2,
-    subject: 'dsa',
-    quiz_time: 2,
-    questions: [
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      },
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      },
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      },
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      },
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      },
-      {
-        question: 'What is size of a byte?',
-        topic: 'Basic Data Types',
-        answer: '8 bits',
-        options: ['1 bit','2 bit','4 bit','8 bit']
-      },
-      {
-        question: 'What is start index of array in C++',
-        topic: 'Array',
-        answer: '0',
-        options: ['0','1','2','3']
-      }
-    ]
+  await client.connect();
+  //TODO: get username dynamcally
+  const user_database = client.db("admin123");
+  const quiz_collection = user_database.collection("quizzes");
+  const query = {
+    _id:new mongo.ObjectID(quiz_code)
   }
+
+  const curr_quiz = await quiz_collection.findOne(query);
+
+  curr_quiz['quiz_code'] = quiz_code;
   res.render("quizzer_main",{layout:"./quizzer_layout",quiz_data:curr_quiz});
 });
 
-router.post("/submit",(req,res) => {
-  console.log(req.body);
-  res.send("quiz submitted")
+router.post("/submit",async (req,res) => {
+
+  res.render("quizzer_submitted",{layout:"./quizzer_layout"});
+
+  var num_questions = req.body.num_questions;
+  var responses = {};
+  await client.connect();
+  //TODO: get username dynamcally
+  const user_database = client.db("admin123");
+  const response_collection = user_database.collection("responses");
+  const quiz_collection = user_database.collection("quizzes");
+  const query = {
+    _id:new mongo.ObjectID(req.body.quiz_code)
+  }
+
+  const curr_quiz = await quiz_collection.findOne(query);
+
+  var total_points = 0;
+
+  for (i = 0; i < num_questions; i++) {
+    curr_response = req.body[i.toString()];
+    if (curr_response == undefined){
+      curr_response = "-1";
+    }else{
+      if(curr_quiz.questions[i].options[curr_response] == curr_quiz.questions[i].answer){
+        total_points = total_points+1;
+      }
+    }
+    responses[i] = curr_response;
+  }
+
+  const responseObject = {
+    "quiz_code":req.body.quiz_code,
+    "submit_time":new Date().getTime(),
+    "responses":responses,
+    "total_points":total_points,
+    "max_points":req.body.num_questions
+  }
+
+  var response_code = response_collection.insertOne(responseObject);
+
+  router.post('/build-report',data={"quiz_code":req.body.quiz_code,"response_code":response_code._id});
 });
 
 module.exports = router;

@@ -10,8 +10,8 @@
 <div class="bg-blue-300 flex flex-wrap h-full w-screen overflow-scroll p-20">
   <div class="bg-white shadow-md rounded-3xl p-5 w-4/5 m-auto">
     <form action="/quizzer/submit" method="POST" id="submit-form">
-      
-        
+      <input type="hidden" value="<%= quiz_data.quiz_code %>" name="quiz_code" class="quiz_code">
+      <input type="hidden" value="<%= quiz_data.num_questions %>" name="num_questions" class="num_questions">
       <% for (var i=0; i < quiz_data.questions.length; i++) {%>
 
       <div class="bg-blue-100 shadow-md rounded-3xl p-5 w-4/5 mx-auto my-6">
@@ -19,49 +19,49 @@
         <ul>
           <li>
             <input
-              value="option-1"
+              value="1"
               type="radio"
-              name="answer<%= i %>"
+              name="<%= i %>"
               id="ans1"
-              class="answer<%= i %>"
+              class="<%= i %>"
             />
-            <label for="ans1" id="option1"
+            <label for="ans1" id="1"
               ><%= quiz_data.questions[i].options[0] %></label
             >
           </li>
           <li>
             <input
-              value="option-2"
+              value="2"
               type="radio"
-              name="answer<%= i %>"
+              name="<%= i %>"
               id="ans2"
-              class="answer<%= i %>"
+              class="<%= i %>"
             />
-            <label for="ans2" id="option2"
+            <label for="ans2" id="2"
               ><%= quiz_data.questions[i].options[1] %></label
             >
           </li>
           <li>
             <input
-              value="option-3"
+              value="3"
               type="radio"
-              name="answer<%= i %>"
+              name="<%= i %>"
               id="ans3"
-              class="answer<%= i %>"
+              class="<%= i %>"
             />
-            <label for="ans3" id="option3"
+            <label for="ans3" id="3"
               ><%= quiz_data.questions[i].options[2] %></label
             >
           </li>
           <li>
             <input
-              value="option-4"
+              value="4"
               type="radio"
-              name="answer<%= i %>"
+              name="<%= i %>"
               id="ans4"
-              class="answer<%= i %>"
+              class="<%= i %>"
             />
-            <label for="ans4" id="option4"
+            <label for="ans4" id="4"
               ><%= quiz_data.questions[i].options[3] %></label
             >
           </li>

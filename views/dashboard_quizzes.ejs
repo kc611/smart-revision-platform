@@ -1,32 +1,266 @@
-<h2>Quizzes here</h2>
-<form action="/quizzer/make-quiz" method="POST" class="quiz-form">
-  <h2>Make a quiz</h2>
-  <div>
-    <label for="num_questions">Choose number of questions:</label>
-    <input
-      type="number"
-      id="num_questions"
-      name="num_questions"
-      min="1"
-      max="90"
-    />
+<h2 class="font-bold mt-2 text-xl pb-2 border-b border-gray-300">
+  Customize your Quiz:
+</h2>
+
+<div class="w-full flex">
+  <div class="w-2/5 mx-2 my-4 bg-white p-5 card shadow-lg">
+    <form action="/quizzer/make-quiz" method="POST" class="quiz-form">
+      <h2 class="text-xl font-bold tracking-wide">Make a new Quiz:</h2>
+
+      <div
+        class="
+          border
+          focus-within:border-blue-500 focus-within:text-blue-500
+          transition-all
+          duration-500
+          rounded
+          p-1
+          my-4
+        "
+      >
+        <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+          <p>
+            <label for="quiz_name" class="bg-white font-bold px-1"
+              >Name of quiz:</label
+            >
+          </p>
+        </div>
+        <p>
+          <input
+            id="quiz_name"
+            autocomplete="off"
+            tabindex="0"
+            type="text"
+            required
+            class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+          />
+        </p>
+      </div>
+
+      <div class="flex my-2">
+        <div
+          class="
+            border
+            focus-within:border-blue-500 focus-within:text-blue-500
+            transition-all
+            duration-500
+            rounded
+            p-1
+            mr-4
+            w-full
+          "
+        >
+          <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+            <p>
+              <label for="num_questions" class="bg-white font-bold px-1"
+                >No. of Questions:</label
+              >
+            </p>
+          </div>
+          <p>
+            <input
+              id="num_questions"
+              min="1"
+              max="90"
+              required
+              name="num_questions"
+              autocomplete="false"
+              tabindex="0"
+              type="number"
+              class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+            />
+          </p>
+        </div>
+        <div
+          class="
+            border
+            focus-within:border-blue-500 focus-within:text-blue-500
+            transition-all
+            duration-500
+            rounded
+            p-1
+            ml-auto
+            w-full
+          "
+        >
+          <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+            <p>
+              <label for="quiz_name" class="bg-white font-bold px-1"
+                >Quiz Duration (Mins):</label
+              >
+            </p>
+          </div>
+          <p>
+            <input
+              type="number"
+              id="quiz_time"
+              name="quiz_time"
+              min="1"
+              max="180"
+              required
+              autocomplete="false"
+              tabindex="0"
+              class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+            />
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="
+          border
+          focus-within:border-blue-500 focus-within:text-blue-500
+          transition-all
+          duration-500
+          rounded
+          p-1
+          my-4
+        "
+      >
+        <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+          <p>
+            <label for="subject" class="bg-white font-bold px-1"
+              >Subject:</label
+            >
+          </p>
+        </div>
+        <p>
+          <select
+            id="subject"
+            name="subject"
+            autocomplete="false"
+            tabindex="0"
+            class="py-1 px-1 outline-none block h-full w-full"
+          >
+            <option value="physics">Physics</option>
+            <option value="dsa">Data Structures and Algorithms</option>
+            <option value="maths">Maths</option>
+            <option value="dbms">DBMS</option>
+          </select>
+        </p>
+      </div>
+
+      <div class="w-100 flex flex-wrap">
+        <div></div>
+        <input
+          type="submit"
+          value="Build this Quiz >>>"
+          class="
+            rounded-lg
+            ml-auto
+            font-bold
+            text-white
+            px-3
+            py-1
+            bg-blue-400
+            hover:shadow-inner
+            hover:bg-blue-700
+            transition-all
+            duration-700
+          "
+        />
+      </div>
+    </form>
   </div>
-  <div>
-    <label for="time">Choose time for quiz in minutes:</label>
-    <input
-      type="number"
-      id="quiz_time"
-      name="quiz_time"
-      min="1"
-      max="180"
-    />
+
+  <div class="mx-2 my-4 bg-white p-5 card shadow-lg w-3/5">
+    <h2 class="text-xl font-bold tracking-wide">Recently Built:</h2>
+    <div class="flex overflow-x-scroll min-h-max">
+      <div
+        class="
+          min-w-max
+          card
+          p-2
+          m-2
+          bg-gray-100
+          rounded-lg
+          shadow-md
+          bg-white
+          hover:shadow-xl
+          transition-shadow
+          duration-300
+          ease-in-out
+        "
+      >
+        <div class="w-60"></div>
+        <h2 class="text-xl font-bold tracking-wide">DSA Quiz:</h2>
+        <div class="font-bold p-1">Number of Questions: 25</div>
+        <div class="font-bold p-1">Quiz Duration: 25 mins</div>
+        <div class="font-bold p-1">Subject: Physics</div>
+        <div
+          class="
+            py-1
+            px-3
+            m-1
+            rounded-lg
+            ml-auto
+            w-max
+            font-bold
+            text-white
+            bg-blue-400
+            hover:shadow-inner
+            hover:bg-blue-700
+            transition-all
+            duration-700
+          "
+        >
+          Retake this Quiz >>>
+        </div>
+      </div>
+    </div>
   </div>
-  <label for="subject">Choose a subject:</label>
-  <select id="subject" name="subject">
-    <option value="physics">Physics</option>
-    <option value="dsa">Data Structures and Algorithms</option>
-    <option value="maths">Maths</option>
-    <option value="dbms">DBMS</option>
-  </select>
-  <input type="submit" value="Make a Quiz" class="btn solid" />
-</form>
+</div>
+
+<h2 class="font-bold mt-2 text-xl pb-2 border-b border-gray-100">
+  Your Scheduled Quizzes:
+</h2>
+
+<div class="flex overflow-x-scroll min-h-max">
+  <div
+    class="
+      min-w-max
+      mx-2
+      my-4
+      bg-white
+      p-5
+      card
+      shadow-lg
+      p-2
+      m-2
+      bg-white
+      rounded-lg
+      shadow-md
+      bg-white
+      hover:shadow-xl
+      transition-shadow
+      duration-300
+      ease-in-out
+    "
+  >
+    <div class="w-96"></div>
+    <h2 class="text-xl font-bold tracking-wide">DSA Quiz:</h2>
+    <div class="font-bold p-1">Number of Questions: 25</div>
+    <div class="font-bold p-1">Quiz Duration: 25 mins</div>
+    <div class="font-bold p-1">Subject: Physics</div>
+    <div class="font-bold p-1">Scheduled for: 11:30 PM, 21 March 2021</div>
+    <div
+      class="
+        py-1
+        px-3
+        m-1
+        rounded-lg
+        ml-auto
+        w-max
+        font-bold
+        text-white
+        bg-blue-400
+        hover:shadow-inner
+        hover:bg-blue-700
+        transition-all
+        duration-700
+      "
+    >
+      Take Quiz Now >>>
+    </div>
+  </div>
+</div>
