@@ -1,0 +1,39 @@
+.loading-center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.loading-ring{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    box-shadow: 0 4px 0 #262626;
+    background: transparent;
+    animation: loading-animate 1s linear infinite;
+}
+
+.loading-text{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    color: #262626;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    line-height: 200px;
+    font-size: 2em;
+    background: transparent;
+    box-shadow: 0 0 5px rgba(0,0,0, 0.2);
+}
+
+@keyframes loading-animate{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

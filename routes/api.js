@@ -16,7 +16,7 @@ router.post('/build-quiz', (req, res) => {
   axios
     .post("http://localhost:5000/build-quiz",JSON.stringify(curr_data))
     .then((http_res) => {
-      res.json({ message: 'done',quiz_code: JSON.stringify(http_res.data)});
+      res.json({ message: 'done',quiz_code: JSON.stringify(http_res.data).split("\"")[3]});
     })
     .catch((error) => {
       console.error("Error in api.js build-quiz request");

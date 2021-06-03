@@ -1,23 +1,12 @@
 var express = require("express");
 var router = express.Router();
-const querystring = require("querystring");
 const mongo = require("mongodb");
 const uri = require("../config/keys").MongoURI;
 const client = new mongo.MongoClient(uri,{ useUnifiedTopology: true });
 
-//This is the post end node for quiz making
-router.post("/make-quiz", (req, res) => {
-  var query_string = querystring.stringify(req.body);
-  res.redirect("/quizzer/prep-quiz?" + query_string);
-});
-
-//This the the node that renders the page for quiz prep
-router.get("/prep-quiz", (req, res) => {
-  res.render("quizzer_prep", { layout: "./quizzer_layout",status:"please wait",num_questions: req.query.num_questions, quiz_time: req.query.quiz_time, subject: req.query.subject,quiz_name: req.query.quiz_name});
-});
 
 router.get("/quiz", async (req, res) => {
-  var quiz_code = req.query.quizcode.split("\"")[3];
+  var quiz_code = req.query.quizcode;
 
   await client.connect();
   //TODO: get username dynamcally
