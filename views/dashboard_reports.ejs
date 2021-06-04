@@ -1,23 +1,31 @@
 <h2 class="font-bold mt-12 pb-2 border-b border-gray-200">Your Reports:</h2>
 
 <div class="mt-8 grid grid-cols-3">
+  <% for (var i=0; i < responses.length; i++) {%>
 
-  <div class="card shadow-md border-t-4 border-blue-300">
+  <div class="card shadow-md border-t-4 border-blue-300 mx-8 my-4">
     <div class="m-4">
       <div class="badge bg-blue-400 w-max card">
-        <div class="text-white text-sm m-2">25th May 2021, 11:34 PM</div>
+        <div class="text-white text-sm m-2">
+          <%= responses[i].submit_time %>
+        </div>
       </div>
-      <span class="font-bold">DSA Quiz</span>
-      
+      <span class="font-bold"><%= responses[i].quiz_name %></span>
+
       <div class="w-100 flex">
-        <span class="block text-gray-500 text-sm">199/300 Marks</span>
-        <a href="" class="ml-auto"
+        <span class="block text-gray-500 text-sm"
+          ><%= responses[i].correct_resp %>/<%= responses[i].incorrect_resp %>/<%= responses[i].unanswered_resp %>/<%= responses[i].num_questions %></span
+        >
+        <a
+          href="/reports?response_code=<%= responses[i].resp_code %>"
+          class="ml-auto"
           ><span class="text-blue-600 text-sm">View reports >>></span></a
         >
       </div>
     </div>
   </div>
-  
+
+  <% } %>
 </div>
 
 <link rel="stylesheet" href="/static/tailwind/tailwind_classic.css" />

@@ -39,15 +39,20 @@ router.post("/submit",async (req,res) => {
 
   const curr_quiz = await quiz_collection.findOne(query);
 
-  var total_points = 0;
+  var correct_resp = 0;
+  var incorrect_resp = 0;
+  var unanswered_resp= 0;
 
   for (i = 0; i < num_questions; i++) {
     curr_response = req.body[i.toString()];
     if (curr_response == undefined){
       curr_response = "-1";
+      unanswered_resp = unanswered_resp+1;
     }else{
       if(curr_quiz.questions[i].options[curr_response] == curr_quiz.questions[i].answer){
-        total_points = total_points+1;
+        correct_resp = correct_resp+1;
+      }else{
+        incorrect_resp = incorrect_resp + 1;
       }
     }
     responses[i] = curr_response;
@@ -55,10 +60,13 @@ router.post("/submit",async (req,res) => {
 
   const responseObject = {
     "quiz_code":req.body.quiz_code,
-    "submit_time":new Date().getTime(),
+    "submit_time":new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}),
     "responses":responses,
-    "total_points":total_points,
-    "max_points":req.body.num_questions
+    "correct_resp":correct_resp,
+    "num_questions":req.body.num_questions,
+    "incorrect_resp":incorrect_resp,
+    "unanswered_resp":unanswered_resp,
+    "quiz_name":req.body.quiz_name
   }
 
   var response_code = response_collection.insertOne(responseObject);

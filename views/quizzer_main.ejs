@@ -11,6 +11,7 @@
   <div class="bg-white shadow-md rounded-3xl p-5 w-4/5 m-auto">
     <form action="/quizzer/submit" method="POST" id="submit-form">
       <input type="hidden" value="<%= quiz_data.quiz_code %>" name="quiz_code" class="quiz_code">
+      <input type="hidden" value="<%= quiz_data.quiz_name %>" name="quiz_name" class="quiz_name">
       <input type="hidden" value="<%= quiz_data.num_questions %>" name="num_questions" class="num_questions">
       <% for (var i=0; i < quiz_data.questions.length; i++) {%>
 
