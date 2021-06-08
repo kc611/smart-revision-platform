@@ -12,9 +12,11 @@
     justify-start
     items-center
   ">
+  <a href="/user-reports">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#fff">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
     </svg>
+</a>
     <div class="text-4xl text-white mx-8 my-4"><%= curr_quiz.name %> Report</div>
 </div>
 
@@ -86,34 +88,55 @@
                                 <div class="flex m-2">
                                     <p class="text-xl font-bold text-gray-400"><%= j+1 %>. </p>
                                     <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].options[j] %></p>
-                                    <% if ( curr_quiz.questions[i].answer == curr_quiz.questions[i].options[j]) { %>
+                                    <% if ( curr_quiz.questions[i].correct_option == j ) { %>
                                         <i data-feather="check-circle" style="color: #a5b7ca;" class="my-auto"></i>
+                                        <p class="text-gray-400 mx-2 my-auto">Is the Correct Answer</p>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        <% } else if (curr_response.responses[i] == curr_quiz.questions[i].correct_option ) { %>
+                            <!-- Correctly Answered configuration -->
+                            <% for (var j=0; j < 4; j++) { %>
+                                <div class="flex m-2">
+                                    <% if ( curr_quiz.questions[i].correct_option == j ) { %>
+                                        <p class="text-xl font-bold text-green-400"><%= j+1 %>. </p>
+                                        <p class="text-xl font-bold mx-2 text-green-400"><%= curr_quiz.questions[i].options[j] %></p>
+                                        <i data-feather="check-circle" style="color: #48caaa;" class="my-auto"></i>
+                                        <p class="text-green-400 mx-2 my-auto">Answered Correctly</p>
+                                        
+                                    <% } else { %>
+                                        <p class="text-xl font-bold text-gray-400"><%= j+1 %>. </p>
+                                        <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].options[j] %></p>    
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                            <!-- Incorrectly Answered configuration -->
+                            <% for (var j=0; j < 4; j++) { %>
+                                <div class="flex m-2">
+                                    <% if ( curr_quiz.questions[i].correct_option == j ) { %>
+                                        <p class="text-xl font-bold text-gray-400"><%= j+1 %>. </p>
+                                        <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].options[j] %></p>
+                                        <i data-feather="check-circle" style="color: #a5b7ca;" class="my-auto"></i>
+                                        <p class="text-gray-400 mx-2 my-auto">Is the Correct Answer</p>
+                                    <% } else if (curr_response.responses[i] == j) { %>
+                                        
+                                        <p class="text-xl font-bold text-pink-500"><%= j+1 %>. </p>
+                                        <p class="text-xl font-bold mx-2 text-pink-500"><%= curr_quiz.questions[i].options[0] %></p>
+                                        <i data-feather="x-circle" style="color: #ec6ac2;" class="my-auto"></i>
+                                        <p class="text-pink-500 mx-2 my-auto">Answered Incorrectly</p>
+                                    <% } else { %>
+                                        <p class="text-xl font-bold text-gray-400"><%= j+1 %>. </p>
+                                        <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].options[j] %></p>    
                                     <% } %>
                                 </div>
                             <% } %>
                         <% } %>
-                       
-                        <!-- <div class="flex m-2">
-                            <p class="text-xl font-bold text-pink-500">A. </p>
-                            <p class="text-xl font-bold mx-2 text-pink-500"><%= curr_quiz.questions[i].options[0] %></p>
-                            <i data-feather="x-circle" style="color: #ec6ac2;" class="my-auto"></i>
-                        </div>
-                        
-                        
-                        <div class="flex m-2">
-                            <p class="text-xl font-bold text-green-400">C. </p>
-                            <p class="text-xl font-bold mx-2 text-green-400"><%= curr_quiz.questions[i].options[2] %></p>
-                            <i data-feather="check-circle" style="color: #48caaa;" class="my-auto"></i>
-                        </div>
-                        <div class="flex m-2">
-                            <p class="text-xl font-bold text-gray-400">D.</p>
-                            <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].options[3] %></p>
-                        </div> -->
                     </div>
 
                     <div class="w-2/5">
                         <p class="text-xl font-bold">Explaination:</p>
-                        <p class="mx-2 text-xl">Correct Answer: Option A</p>
+                        <p class="mx-2 text-xl">Correct Answer: Option <%= curr_quiz.questions[i].correct_option + 1 %></p>
                         <p class="mx-2">Afbjksdfbsdjfbksd dfkjsdabbfjkadfjkasf asdfbsdjkfbjkasdfsd fdfasdjkbfjksdbfjksdf
                             sdfkjbsdjfbasdjkfbsd fnsdafbsdbjfbsdf sdfbkdsbfsdjkfbdn fsdjkbfdsjkf ksdnf sdk fnsd fnk dv
                             sd vks vhnksfa vnkasfhkv fk vfkv fhnkv ahkf va</p>

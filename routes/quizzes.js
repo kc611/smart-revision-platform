@@ -49,7 +49,7 @@ router.post("/submit",async (req,res) => {
       curr_response = "-1";
       unanswered_resp = unanswered_resp+1;
     }else{
-      if(curr_quiz.questions[i].options[curr_response] == curr_quiz.questions[i].answer){
+      if(curr_response == curr_quiz.questions[i].correct_option){
         correct_resp = correct_resp+1;
       }else{
         incorrect_resp = incorrect_resp + 1;
