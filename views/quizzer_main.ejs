@@ -20,14 +20,26 @@
         <ul>
           <li>
             <input
+              value="0"
+              type="radio"
+              name="<%= i %>"
+              id="ans0"
+              class="<%= i %>"
+            />
+            <label for="ans0" id="0"
+              ><%= quiz_data.questions[i].options[0] %></label
+            >
+          </li>
+          <li>
+            <input
               value="1"
               type="radio"
               name="<%= i %>"
-              id="ans1"
+              id="ans2"
               class="<%= i %>"
             />
             <label for="ans1" id="1"
-              ><%= quiz_data.questions[i].options[0] %></label
+              ><%= quiz_data.questions[i].options[1] %></label
             >
           </li>
           <li>
@@ -39,7 +51,7 @@
               class="<%= i %>"
             />
             <label for="ans2" id="2"
-              ><%= quiz_data.questions[i].options[1] %></label
+              ><%= quiz_data.questions[i].options[2] %></label
             >
           </li>
           <li>
@@ -51,18 +63,6 @@
               class="<%= i %>"
             />
             <label for="ans3" id="3"
-              ><%= quiz_data.questions[i].options[2] %></label
-            >
-          </li>
-          <li>
-            <input
-              value="4"
-              type="radio"
-              name="<%= i %>"
-              id="ans4"
-              class="<%= i %>"
-            />
-            <label for="ans4" id="4"
               ><%= quiz_data.questions[i].options[3] %></label
             >
           </li>

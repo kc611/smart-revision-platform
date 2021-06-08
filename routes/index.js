@@ -56,9 +56,7 @@ router.get('/reports', async (req,res)=>{
     const curr_response = await response_collection.findOne({_id:new mongo.ObjectID(response_code)});
     const curr_quiz = await quiz_collection.findOne({_id:new mongo.ObjectID(curr_response['quiz_code'])});
 
-    console.log(curr_response);
-    console.log(curr_quiz);
-    res.render("reports_main",{layout:'./reports_layout',title:"Report on ",curr_response:curr_response,curr_quiz:curr_quiz});
+    res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz});
 });
 
 module.exports = router;
