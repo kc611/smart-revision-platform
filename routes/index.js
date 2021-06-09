@@ -10,11 +10,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/dashboard', (req, res) => {
-    res.render("dashboard_main",{layout: './dashboard_base'});
+    res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});
 });
 
 router.get('/quizzes',(req,res)=>{
-    res.render("dashboard_quizzes",{layout:'./dashboard_base'});
+    res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes"});
 })
 
 router.get('/user-reports',async (req,res)=>{
@@ -40,7 +40,7 @@ router.get('/user-reports',async (req,res)=>{
          }
     );
 
-    res.render("dashboard_reports",{layout:'./dashboard_base',responses:resp_data});
+    res.render("dashboard_reports",{layout:'./dashboard_base',responses:resp_data,title:"Reports"});
 });
 
 router.get('/reports', async (req,res)=>{

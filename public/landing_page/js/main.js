@@ -53,7 +53,7 @@
 		var sections = document.querySelectorAll('.page-scroll');
 		var scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
-		for (var i = 0; i < sections.length; i++) {
+		for (var i = 0; i < sections.length - 1; i++) {
 			var currLink = sections[i];
 			var val = currLink.getAttribute('href');
 			var refElement = document.querySelector(val);
@@ -70,33 +70,33 @@
     window.document.addEventListener('scroll', onScroll);
     
 
-    // ===== pricing-style-4 slider
-    tns({
-        container: '.pricing-active',
-        autoplay: false,
-        mouseDrag: true,
-        gutter: 0,
-        nav: false,
-        controls: true,
-        controlsText: [
-          '<i class="lni lni-chevron-left prev"></i>',
-          '<i class="lni lni-chevron-right prev"></i>',
-        ],
-        responsive: {
-          0: {
-            items: 1,
-          },
-          768: {
-            items: 2,
-          },
-          992: {
-            items: 1.2,
-          },
-          1200: {
-            items: 2,
-          }
-        }
-      });
+    // // ===== pricing-style-4 slider
+    // tns({
+    //     container: '.pricing-active',
+    //     autoplay: false,
+    //     mouseDrag: true,
+    //     gutter: 0,
+    //     nav: false,
+    //     controls: true,
+    //     controlsText: [
+    //       '<i class="lni lni-chevron-left prev"></i>',
+    //       '<i class="lni lni-chevron-right prev"></i>',
+    //     ],
+    //     responsive: {
+    //       0: {
+    //         items: 1,
+    //       },
+    //       768: {
+    //         items: 2,
+    //       },
+    //       992: {
+    //         items: 1.2,
+    //       },
+    //       1200: {
+    //         items: 2,
+    //       }
+    //     }
+    //   });
 
 	// WOW active
     new WOW().init();
