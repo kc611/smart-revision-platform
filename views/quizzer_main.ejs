@@ -1,77 +1,77 @@
 
 <div class="fixed bg-blue-400 shadow-md w-full px-10 py-2 flex justify-between items-center">
-    <div class="text-2xl text-white"><%= quiz_data.subject %> Quiz </div>
+    <div class="text-2xl text-white"><%= quiz_data.name %></div>
     <div class="justify-around px-10">
         <div class="text-white"> Time Left:</div>
         <div class="text-xl text-white" id="quiz-timer"></div>
     </div>
 </div>
 
-<div class="bg-blue-300 flex flex-wrap h-full w-screen overflow-scroll p-20">
-  <div class="bg-white shadow-md rounded-3xl p-5 w-4/5 m-auto">
+<div class="bg-white flex flex-wrap h-full w-screen overflow-scroll p-20">
+  <div class="bg-white shadow-xl rounded-3xl p-5 border-t-4 border-blue-300 w-4/5 m-auto">
+    <p class="text-4xl font-bold text-gray-700 w-100 text-center my-12">Questions</p>
     <form action="/quizzer/submit" method="POST" id="submit-form">
       <input type="hidden" value="<%= quiz_data.quiz_code %>" name="quiz_code" class="quiz_code">
       <input type="hidden" value="<%= quiz_data.quiz_name %>" name="quiz_name" class="quiz_name">
       <input type="hidden" value="<%= quiz_data.num_questions %>" name="num_questions" class="num_questions">
       <% for (var i=0; i < quiz_data.questions.length; i++) {%>
 
-      <div class="bg-blue-100 shadow-md rounded-3xl p-5 w-4/5 mx-auto my-6">
-        <h2 class="question"><%= quiz_data.questions[i].question %></h2>
-        <ul>
-          <li>
-            <input
+        <div class="border-solid border-4 m-8 p-8">
+          <p class="text-xl font-bold text-gray-400">Question <%= i+1 %>.</p>
+          <p class="text-xl font-bold mx-2"><%= quiz_data.questions[i].question %></h2>
+          <div class="w-full m-2">
+            <div class="flex">
+              <input
               value="0"
               type="radio"
               name="<%= i %>"
               id="ans0"
-              class="<%= i %>"
+              class="<%= i %> my-auto ml-4"
+
             />
-            <label for="ans0" id="0"
-              ><%= quiz_data.questions[i].options[0] %></label
-            >
-          </li>
-          <li>
-            <input
-              value="1"
+            <p class="text-xl font-bold mx-2 my-auto"><%= quiz_data.questions[i].options[0] %></p>
+            </div>
+            
+            <div class="flex">
+              <input
+              value="0"
               type="radio"
               name="<%= i %>"
-              id="ans2"
-              class="<%= i %>"
+              id="ans0"
+              class="<%= i %> my-auto ml-4"
             />
-            <label for="ans1" id="1"
-              ><%= quiz_data.questions[i].options[1] %></label
-            >
-          </li>
-          <li>
-            <input
-              value="2"
+            <p class="text-xl font-bold mx-2 my-auto"><%= quiz_data.questions[i].options[1] %></p>
+            </div>
+
+            <div class="flex">
+              <input
+              value="0"
               type="radio"
               name="<%= i %>"
-              id="ans2"
-              class="<%= i %>"
+              id="ans0"
+              class="<%= i %> my-auto ml-4"
             />
-            <label for="ans2" id="2"
-              ><%= quiz_data.questions[i].options[2] %></label
-            >
-          </li>
-          <li>
-            <input
-              value="3"
+            <p class="text-xl font-bold mx-2 my-auto"><%= quiz_data.questions[i].options[2] %></p>
+            </div>
+
+            <div class="flex">
+              <input
+              value="0"
               type="radio"
               name="<%= i %>"
-              id="ans3"
-              class="<%= i %>"
+              id="ans0"
+              class="<%= i %> my-auto ml-4"
             />
-            <label for="ans3" id="3"
-              ><%= quiz_data.questions[i].options[3] %></label
-            >
-          </li>
-        </ul>
+            <p class="text-xl font-bold mx-2 my-auto"><%= quiz_data.questions[i].options[3] %></p>
+            </div>
+
+
+          </div>
       </div>
 
       <% } %>
 
-      <div class="mx-auto w-min"><input type="submit" value="Submit" /></div>
+      <div class="mx-auto w-max"><input type="submit" value="Submit" class="bg-blue-300 rounded-full py-4 px-12 font-bold text-white text-xl hover:bg-blue-500 transition- duration-500"/></div>
       
       <!-- <div id="showScore" class="scoreArea"> </div> -->
     </form>

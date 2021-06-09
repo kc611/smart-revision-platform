@@ -15,7 +15,36 @@ router.get('/dashboard', (req, res) => {
 
 router.get('/quizzes',(req,res)=>{
     res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes"});
-})
+});
+
+router.get('/reports', async (req,res)=>{
+    const response_code = req.query.response_code;
+
+    await client.connect();
+
+    //TODO: get username dynamically
+    const user_database = client.db("admin123");
+    const response_collection = user_database.collection("responses");
+    const quiz_collection = user_database.collection("quizzes");
+    
+    const curr_response = await response_collection.findOne({_id:new mongo.ObjectID(response_code)});
+    const curr_quiz = await quiz_collection.findOne({_id:new mongo.ObjectID(curr_response['quiz_code'])});
+
+    res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz});
+});
+
+router.get('/suggestions', (req, res) => {
+    res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions"});
+});
+
+router.get('/inventory', (req, res) => {
+    res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory"});
+});
+
+router.get('/profile', (req, res) => {
+    res.render("dashboard_profile",{layout: './dashboard_base', title:"Profile Settings"});
+});
+
 
 router.get('/user-reports',async (req,res)=>{
 
@@ -43,20 +72,6 @@ router.get('/user-reports',async (req,res)=>{
     res.render("dashboard_reports",{layout:'./dashboard_base',responses:resp_data,title:"Reports"});
 });
 
-router.get('/reports', async (req,res)=>{
-    const response_code = req.query.response_code;
 
-    await client.connect();
-
-    //TODO: get username dynamically
-    const user_database = client.db("admin123");
-    const response_collection = user_database.collection("responses");
-    const quiz_collection = user_database.collection("quizzes");
-    
-    const curr_response = await response_collection.findOne({_id:new mongo.ObjectID(response_code)});
-    const curr_quiz = await quiz_collection.findOne({_id:new mongo.ObjectID(curr_response['quiz_code'])});
-
-    res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz});
-});
 
 module.exports = router;

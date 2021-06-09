@@ -4,10 +4,7 @@
 
 <div class="w-full flex">
   <div class="w-2/5 mx-2 my-4 bg-white p-5 card rounded-3xl shadow-lg">
-    <form
-      class="quiz-form"
-      id="quiz-form"
-    >
+    <form class="quiz-form" id="quiz-form">
       <h2 class="text-xl font-bold tracking-wide">Make a new Quiz:</h2>
 
       <div
@@ -270,21 +267,53 @@
   </div>
 </div>
 
-<div class="bg-black bg-opacity-50 absolute inset-0 flex justify-center items-center hidden" id="popup-box">
-  <div class="h-3/5 w-2/5 bg-white card rounded-3xl shadow-md">
-    <div>
-      <div id="loading-wait-content">
-        <h2 class="text-xl font-bold tracking-wide mt-4 text-center">Please Wait till we build your Quiz:</h2>
+<div
+  class="
+    bg-black bg-opacity-50
+    absolute
+    inset-0
+    flex
+    justify-center
+    items-center
+    hidden
+  "
+  id="popup-box"
+>
+  <div class="h-1/2 w-2/5 bg-white card rounded-3xl shadow-md">
+    <div class="w-full h-full">
+      <div class="w-full h-max">
+        <div id="loading-wait-content">
+          <h2 class="text-xl font-bold tracking-wide mt-4 text-center">
+            Please Wait till we build your Quiz:
+          </h2>
+        </div>
+        <div id="loading-wait-notice">
+          <h2
+            class="text-gray-500 font-bold tracking-wide mb-4 mx-10 text-center"
+          >
+            Meanwhile, you can explore the other sections, the quiz will be
+            automatically added to your recently built
+          </h2>
+        </div>
       </div>
+
       <div id="loading-done-content">
-        <h2 class="text-xl font-bold tracking-wide mt-4 text-center" id="loading-done-content">Your Quiz has been built:</h2>
+        <h2
+          class="text-xl font-bold tracking-wide mt-4 text-center"
+          id="loading-done-content"
+        >
+          Your Quiz has been built:
+        </h2>
       </div>
-      <div class="loading-center">
-        <div class="loading-ring"></div>
+
+      <div class="w-full mt-12" id="loading-wait-animation">
+        <img src="/static/assets/oval.svg" class="h-1/5 w-1/5 mx-auto" alt="" />
       </div>
-      <div id="loading-wait-notice">
-        <h2 class="text-gray-500 font-bold tracking-wide mb-4 mx-10 text-center">Meanwhile, you can explore the other sections, the quiz will be automatically added to your recently built</h2>  
+
+      <div class="w-full" id="loading-done-animation">
+        <img src="/static/assets/checkmark.svg" class="h-1/5 w-1/5 mx-auto" alt="" />
       </div>
+
       <div id="loading-done-buttons">
         <div class="w-100 flex flex-wrap">
           <!-- TODO: Add schedule quiz functionality -->
@@ -306,8 +335,8 @@
           >
             Schedule Quiz for Later
           </div>
-          
-            <div
+
+          <div
             class="
               rounded-lg
               mx-auto
@@ -323,71 +352,74 @@
             "
             id="quiz-form-submit-button"
           >
-          <a href="" id="go-to-quiz"> Take Quiz Now >>></a>
+            <a href="" id="go-to-quiz"> Take Quiz Now >>></a>
           </div>
-          
-
         </div>
-    
+      </div>
     </div>
-    
-    
   </div>
-</div>
 
-<script>
-  const quiz_form = document.getElementById("quiz-form");
-  const submit_button = document.getElementById("quiz-form-submit-button");
-  const popup_box = document.getElementById("popup-box");
+  <script>
+    const quiz_form = document.getElementById("quiz-form");
+    const submit_button = document.getElementById("quiz-form-submit-button");
+    const popup_box = document.getElementById("popup-box");
 
-  const loading_wait_content = document.getElementById("loading-wait-content");
-  const loading_wait_notice = document.getElementById("loading-wait-notice");
-  const loading_done_content = document.getElementById("loading-done-content");
-  const loading_done_buttons = document.getElementById("loading-done-buttons");
-  const curr_quiz_link = document.getElementById("go-to-quiz");
+    const loading_wait_content = document.getElementById(
+      "loading-wait-content"
+    );
+    const loading_wait_notice = document.getElementById("loading-wait-notice");
+    const loading_done_content = document.getElementById(
+      "loading-done-content"
+    );
+    const loading_done_buttons = document.getElementById(
+      "loading-done-buttons"
+    );
+    const loading_wait_animation = document.getElementById("loading-wait-animation");
+    const loading_done_animation = document.getElementById("loading-done-animation");
+    const curr_quiz_link = document.getElementById("go-to-quiz");
 
-  // Form inputs
-  const quiz_name_input = document.getElementById("quiz_name");
-  const quiz_time_input = document.getElementById("quiz_time");
-  const quiz_subject_input = document.getElementById("subject");
-  const quiz_num_questions_input = document.getElementById("num_questions");
+    // Form inputs
+    const quiz_name_input = document.getElementById("quiz_name");
+    const quiz_time_input = document.getElementById("quiz_time");
+    const quiz_subject_input = document.getElementById("subject");
+    const quiz_num_questions_input = document.getElementById("num_questions");
 
-  submit_button.onclick = function () {
-    popup_box.style.display = "flex";
-    loading_done_content.style.display = "none";
-    loading_done_buttons.style.display = "none";
+    submit_button.onclick = function () {
+      popup_box.style.display = "flex";
+      loading_done_content.style.display = "none";
+      loading_done_buttons.style.display = "none";
+      loading_done_animation.style.display = "none";
 
-    //TODO: Add form validation
-    const data = {
-      "subject":quiz_subject_input.value,
-      "num_questions":quiz_num_questions_input.value,
-      "quiz_time":quiz_time_input.value,
-      "quiz_name":quiz_name_input.value
-    }
-    
-        // loading_wait_content.style.display = "none";
-        // loading_wait_notice.style.display = "none";
-        // loading_done_content.style.display = "inline";
-        // loading_done_buttons.style.display = "inline";
+      //TODO: Add form validation
+      const data = {
+        subject: quiz_subject_input.value,
+        num_questions: quiz_num_questions_input.value,
+        quiz_time: quiz_time_input.value,
+        quiz_name: quiz_name_input.value,
+      };
 
-    fetch('/api/build-quiz', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-              'Content-type': 'application/json; charset=UTF-8'
-          }
+      fetch("/api/build-quiz", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       })
-      .then(response => response.json())
-      .then(json => {
+        .then((response) => response.json())
+        .then((json) => {
+          //TODO: Make the item alignment and loading transition proper.
+          loading_wait_content.style.display = "none";
+          loading_wait_notice.style.display = "none";
+          loading_wait_animation.style.display = "none";
 
-        //TODO: Make the item alignment and loading transition proper.
-        loading_wait_content.style.display = "none";
-        loading_wait_notice.style.display = "none";
-        loading_done_content.style.display = "inline";
-        loading_done_buttons.style.display = "inline";
-        curr_quiz_link.href = "/quizzer/quiz?quizcode="+json.quiz_code;
-    });
-  };
-</script>
+          loading_done_content.style.display = "block";
+          loading_done_buttons.style.display = "block";
+          loading_done_animation.style = "";
+          loading_done_animation.classList.add("my-28");
+          curr_quiz_link.href = "/quizzer/quiz?quizcode=" + json.quiz_code;
+        });
+    };
+  </script>
 
-<link rel="stylesheet" href="static/dashboard/dashboard_quizzes.css" />
+  <link rel="stylesheet" href="static/dashboard/dashboard_quizzes.css" />
+</div>

@@ -5,7 +5,7 @@
 
   <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
     <div class="m-4">
-      <div class="badge bg-blue-400 w-max card">
+      <div class="badge rounded-3xl shadow-md bg-blue-400 w-max card">
         <div class="text-white text-sm m-2">
           <%= responses[i].submit_time %>
         </div>
@@ -13,13 +13,15 @@
       <span class="font-bold"><%= responses[i].quiz_name %></span>
 
       <div class="w-100 flex">
-        <span class="block text-gray-500 text-sm"
-          ><%= responses[i].correct_resp %>/<%= responses[i].incorrect_resp %>/<%= responses[i].unanswered_resp %>/<%= responses[i].num_questions %></span
-        >
+        <div>
+          <span class="block text-gray-500 text-sm">Correct:<%= responses[i].correct_resp %>   /      Incorrect:<%= responses[i].incorrect_resp %></span>
+          <span class="block text-gray-500 text-sm">Unanswered:<%= responses[i].unanswered_resp %>  /  Total:<%= responses[i].num_questions %></span>
+        </div>
+        
         <a
           href="/reports?response_code=<%= responses[i].resp_code %>"
           class="ml-auto"
-          ><span class="text-blue-600 text-sm">View reports >>></span></a
+          ><span class="text-blue-600 text-sm">View report >>></span></a
         >
       </div>
     </div>
