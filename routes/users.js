@@ -8,6 +8,7 @@ router.get("/login", (req, res) => {
   if (!req.isAuthenticated()) {
     res.render("login_register", { title: "Login System" ,layout:'./login_register_base'});
   } else {
+    
     res.redirect("/dashboard");
   }
 });
@@ -22,11 +23,11 @@ router.post("/login", (req, res, next) => {
       if (!user) {
         User.findOne({ username: req.body.username }, (err, foundUser) => {
           if (err) {
-            res.send("Something went wrong, couldn't log you in");
+            req.flash("error","Something went wrong, couldn't log you in");
           } else if (foundUser) {
-            res.send("Incorrect password");
+            req.flash("error","Incorrect password");
           } else {
-            res.send("Couldn't find a user with the given email address");
+            req.flash("error","Couldn't find a user with the given email address");
           }
         });
       } else {
@@ -54,7 +55,7 @@ router.post("/register", (req, res) => {
 
   User.register(newUser, curr_password, (err, user) => {
     if (err) {
-      res.send(err.message);
+      req.flash("error",err.message);
     } else {
       console.log("Registered user");
       res.redirect("/users/login");

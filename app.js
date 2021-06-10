@@ -50,6 +50,17 @@ app.use(passport.session());
 
 app.use(flash());
 
+app.use((req, res, next) => {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
+
+app.use(function(req,res,next){
+  res.locals.currentUser = req.user;
+  next();
+});
+
 app.use("/", require("./routes/index"));
 app.use("/api",require("./routes/api"));
 app.use("/users", require("./routes/users"));

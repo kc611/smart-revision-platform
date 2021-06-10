@@ -1,23 +1,30 @@
 var express = require('express');
 var router = express.Router();
-const querystring = require("querystring");
 const mongo = require("mongodb");
 const uri = require("../config/keys").MongoURI;
 const client = new mongo.MongoClient(uri,{ useUnifiedTopology: true });
+
+function isUser(req, res, next) {
+    if(req.isAuthenticated()){
+        return next();
+    } else{
+        return res.redirect("/users/login");
+    }
+}
 
 router.get('/', (req, res) => {
     res.render('landing_page');
 });
 
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', isUser, (req, res) => {
     res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});
 });
 
-router.get('/quizzes',(req,res)=>{
+router.get('/quizzes', isUser, (req,res)=>{
     res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes"});
 });
 
-router.get('/reports', async (req,res)=>{
+router.get('/reports', isUser, async (req,res)=>{
     const response_code = req.query.response_code;
 
     await client.connect();
@@ -33,20 +40,20 @@ router.get('/reports', async (req,res)=>{
     res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz});
 });
 
-router.get('/suggestions', (req, res) => {
+router.get('/suggestions', isUser, (req, res) => {
     res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions"});
 });
 
-router.get('/inventory', (req, res) => {
+router.get('/inventory', isUser, (req, res) => {
     res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory"});
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', isUser, (req, res) => {
     res.render("dashboard_profile",{layout: './dashboard_base', title:"Profile Settings"});
 });
 
 
-router.get('/user-reports',async (req,res)=>{
+router.get('/user-reports',isUser, async (req,res)=>{
 
     await client.connect();
     //TODO: get username dynamcally
@@ -71,7 +78,6 @@ router.get('/user-reports',async (req,res)=>{
 
     res.render("dashboard_reports",{layout:'./dashboard_base',responses:resp_data,title:"Reports"});
 });
-
 
 
 module.exports = router;
