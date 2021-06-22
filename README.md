@@ -18,8 +18,7 @@ The basic idea for this project is as follows:
 
 #### Study Material Suggestion algorithm:
 - For generating a suggestion, the general approach would be to take the latest result of a quiz. Then we take all of the wrong questions and generate a list of topics/keywords.
-- These keywords would then be searched in the database of reference books and notes associated with the subject using simple keyword search.  
-- We can then use AI/ML algorithms to filter these keyword searches into relevant content. However this task can be done in other simpler ways not involving ML. (The exact model/algorithm to be used for this task is yet to be determined)
+- These keywords would then be searched in the database of reference books and notes associated with the subject using simple keyword search.
 
 #### Softwares Used: 
 This is a NodeJs based project with a Flask backend API. It uses MongoDB as database for both NodeJs and Flask backends. For frontend this project relies on Tailwind CSS. It will also use Tensorflow and Keras inside Flask API to build customized Quizzes and generate reading suggestions from study material. 
