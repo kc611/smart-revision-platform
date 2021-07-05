@@ -1,9 +1,16 @@
 <body>
-  <div class="container">
+  <div class="container" style="max-width: inherit;">
     <div class="forms-container">
       <div class="signin-signup">
         <form action="/users/login" method="POST" class="sign-in-form">
           <h2 class="title">Sign in</h2>
+          <% if(error && error.length > 0) { %>
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Holy smokes!</strong>
+            <span class="block sm:inline">Looks like you entered the wrong password.</span>
+            <strong class="font-bold"> X </strong>
+          </div>
+          <% } %>
           <div class="input-field">
             <i class="fas fa-user"></i>
             <input type="text" placeholder="Username" name="username"/>
@@ -87,5 +94,8 @@
     </div>
   </div>
 
+  
   <script src="/static/login_page_utilities.js"></script>
+
+  <link rel="stylesheet" href="/static/tailwind/tailwind_classic.css" />
 </body>

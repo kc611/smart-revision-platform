@@ -55,6 +55,9 @@ def build_quiz():
     for i in range(0, quiz_num_questions):
         questions[i].pop('_id')
 
+    # We can build a personalized quiz here, since we have the database data available.
+    
+
     #Save the questions as a quiz in database
     user_database = client.get_database(username.split('@')[0])
     user_quizzes = user_database["quizzes"]
