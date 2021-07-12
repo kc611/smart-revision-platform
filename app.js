@@ -26,7 +26,7 @@ app.use(express.json({
 }));
 
 app.use(expressLayouts);
-app.set('layout', './landing_base');
+app.set('layout', './landing_page/landing_base');
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
@@ -66,6 +66,7 @@ app.use("/api",require("./routes/api"));
 app.use("/users", require("./routes/users"));
 app.use("/notes",require("./routes/notes"));
 app.use("/quizzer",require("./routes/quizzes"));
+app.use("/database",require("./routes/mongo_reqs"));
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
 app.get("*", (req, res) => {

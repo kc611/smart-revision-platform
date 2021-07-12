@@ -1,6 +1,37 @@
 var express = require('express');
 var router = express.Router();
 const axios = require("axios");
+var nodemailer = require('nodemailer');
+
+router.post('/contact', (req, res) => {
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'smart.rev.acc@gmail.com',
+      pass: '2smart2rev'
+    }
+  });
+
+  if(req.body.name.isEmpty()){
+    // TODO: send message that feild is empty
+  }
+  email_text = "Name : " + req.body.name + "\nEmail : " + req.body.email + "\nNumber : " + req.body.number + "\nSubject : " + req.body.subject + "\nMessage : " + req.body.message; 
+
+  var mailOptions = {
+    from: 'smart.rev.acc@gmail.com',
+    to: 'smart.rev.acc@gmail.com',
+    subject: 'Support Reqested',
+    text: email_text
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      // TODO: send message that error
+    } else {
+      // TODO: send message that emailed sucessfully
+    }
+  });
+})
 
 // This request goes to external flask API
 router.post('/build-quiz', (req, res) => {

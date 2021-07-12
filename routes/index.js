@@ -4,6 +4,11 @@ const mongo = require("mongodb");
 const uri = require("../config/keys").MongoURI;
 const client = new mongo.MongoClient(uri,{ useUnifiedTopology: true });
 
+router.get('/', (req, res) => {
+    res.render('landing_page/landing_page');
+});
+
+
 function isUser(req, res, next) {
     if(req.isAuthenticated()){
         return next();
@@ -11,10 +16,6 @@ function isUser(req, res, next) {
         return res.redirect("/users/login");
     }
 }
-
-router.get('/', (req, res) => {
-    res.render('landing_page');
-});
 
 router.get('/dashboard', isUser, (req, res) => {
     res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});

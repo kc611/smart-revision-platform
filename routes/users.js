@@ -6,9 +6,8 @@ const passport = require("passport");
 
 router.get("/login", (req, res) => {
   if (!req.isAuthenticated()) {
-    res.render("login_register", { title: "Login System" ,layout:'./login_register_base'});
+    res.render("login_page/login_register", { title: "Login System" ,layout:'./login_page/login_register_base'});
   } else {
-    
     res.redirect("/dashboard");
   }
 });
@@ -23,6 +22,7 @@ router.post("/login", (req, res, next) => {
       if (!user) {
         User.findOne({ username: req.body.username }, (err, foundUser) => {
           if (err) {
+            // TODO: Implement flash frontend
             req.flash("error","Something went wrong, couldn't log you in");
           } else if (foundUser) {
             req.flash("error","Incorrect password");
@@ -48,11 +48,13 @@ router.post("/login", (req, res, next) => {
 router.post("/register", (req, res) => {
   var curr_username = req.body.username;
   var curr_password = req.body.password;
+  // TODO: Implement Organization selecttion Here
   const newUser = new User({
     username: curr_username,
     organization:"ABVIIITM"
   });
 
+  // TODO: Do this after email confirmation
   User.register(newUser, curr_password, (err, user) => {
     if (err) {
       req.flash("error",err.message);

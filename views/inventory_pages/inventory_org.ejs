@@ -23,7 +23,6 @@
   <% for (var i=0; i < curr_notes.length; i++) {%>
 
     <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
-      
       <div class="m-4">
         
         <span class="font-bold"><%= curr_notes[i].book_name %></span>
@@ -37,7 +36,7 @@
           <a
             href="/notes/view?type=org&file_name=<%= curr_notes[i].file_name %>&subject=<%= curr_info.subject %>"
             class="ml-auto"
-            ><span class="text-blue-600 text-sm">Click to view >>></span></a
+            ><span class="text-blue-600">Click to view >>></span></a
           >
         </div>
       </div>
