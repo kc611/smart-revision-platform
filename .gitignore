@@ -1,3 +1,4 @@
 node_modules/
 FlaskAPI/question_adder.py
 .env
+uploads/

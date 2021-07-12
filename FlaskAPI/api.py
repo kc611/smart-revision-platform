@@ -85,16 +85,36 @@ def build_report():
     return jsonify({'status':'Done'})
 
 import os
+import gridfs
+import base64
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
-    content = request.files['pdf']
-    print(request.files)
-    pdf = request.data
-    
+    pdf = request.get_data()
+    # TODO: Separate other data and the actual file bytes data
+    pdf_file = open(uploads_dir+ "/sample.pdf", "wb")
+    pdf_file.write(pdf)
+    pdf_file.close()
+# TODO: Delete after uploaded to database
 
     return jsonify({'status':'Done'})
+
+@app.route('/get-file',methods=['GET'])
+def get_file():
+    # Get This dynamically
+    db = client.get_database("ABVIIITM")
+    fs = gridfs.GridFS(db,collection='dsa_notes')
+    filelist = list(db['dsa_notes.files'].find({"filename":"dsa1.pdf"},{"_id": 1, "filename": 1})) 
+    print(filelist)
+    fileid = filelist[0]['_id']
+    fobj = fs.get(fileid)
+
+    # f = open(uploads_dir+ "/sampledown.pdf", "wb")
+    # f.write()
+    # f.close()
+
+    return fobj.read()
 
 # # To insert a single document into the database,
 # # insert_one() function is used

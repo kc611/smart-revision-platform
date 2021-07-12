@@ -80,11 +80,13 @@ var FormData = require('form-data');
 var fs = require('fs');
 
 router.post('/upload-file', upload.single('pdf'), async (req,res) => {
-  console.log(req.file)
-
+  console.log(req.file);
 
   const form = new FormData();
   form.append(req.file.name, fs.createReadStream(req.file.path));
+  form.append("subject",req.body.subject)
+  // TODO : Do this dynamically
+  form.append("username","admin123@gmail.com")
   
   const response = await axios({
       method: 'post',
@@ -93,7 +95,35 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
       headers: {
           'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
       },
+  })
+
+})
+
+router.get('/get-file',(req,res) => {
+
+  // form.append("subject",req.body.subject)
+  // TODO : Do this dynamically
+  form = {"username":"admin123@gmail.com"}
+  
+  axios.post(
+    'http://localhost:5000/get-file',
+    JSON.stringify(form)
+  ).then((http_res) => {
+    // TODO: We have the binary data display it somehow
+    res.contentType("application/pdf");
+    return res.send("./tmp/curr_file.pdf");
+    // fs.writeFile("./tmp/curr_file.pdf", http_res, "binary",function(err) {
+    //   if (err) return console.log(err);
+    //   console.log("file is saved");
+      
+    // })
+
+  })
+  .catch((error) => {
+    console.error("Error in api.js build-quiz request");
+    console.log(error)
   });
+
 
 })
 

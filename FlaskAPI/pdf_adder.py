@@ -20,7 +20,7 @@ def write_new_pdf(path):
     fs = gridfs.GridFS(db,collection='dsa_notes')
     # Note, open with the "rb" flag for "read bytes"
     with open(path, "rb") as f:
-        encoded_string = base64.b64encode(f.read())
+        encoded_string = f.read()
     with fs.new_file(
         filename=path.split('/')[-1],
         book_name=(path.split('/')[-1]).split('.')[0],
