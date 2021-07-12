@@ -20,25 +20,4 @@ router.get("/download", (req, res) => {
 })
 
 
-router.post("/upload", (req, res) => {
-    // TODO: Allow only PDF Files
-    // TODO: Take Author and bookname
-    let file = { name: req.body.uploadedFile.name, file: binary(req.files.uploadedFile.data) }
-
-    var currentUser = req.user;
-// TODO: Finish this user thingy
-    let db = client.db('admin123')
-    let collection = db.collection(rerq.body.subject + '_notes')
-
-    try {
-        collection.insertOne(file)
-        req.flash('success', 'Success');
-    }
-    catch (err) {
-        req.flash('error','Error while inserting:', err)
-    }
-        
-})
-
-
 module.exports = router;

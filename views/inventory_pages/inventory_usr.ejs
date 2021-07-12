@@ -53,9 +53,9 @@
             <div>
               Upload New Notes.
             </div>
-            <form action="/database/upload" method="POST" enctype="multipart/form-data">
+            <form action="/api/upload-file" method="POST" enctype="multipart/form-data">
                 <input type="hidden" value="<%= curr_info.subject %>" name="subject" class="subject">
-                <input type="file" name="uploadedFile" /> <br />
+                <input type="file" name="pdf" /> <br />
                 <input type="submit" value="Upload File" />
             </form>
           </div>

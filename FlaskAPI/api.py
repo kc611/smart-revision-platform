@@ -82,8 +82,20 @@ def build_report():
     content = request.get_data()
     dict_str = content.decode("UTF-8")
     report_data = ast.literal_eval(dict_str)
+    return jsonify({'status':'Done'})
 
+import os
+uploads_dir = os.path.join(app.instance_path, 'uploads')
+
+@app.route('/upload-file',methods=['POST'])
+def upload_file():
+    content = request.files['pdf']
+    print(request.files)
+    pdf = request.data
     
+
+    return jsonify({'status':'Done'})
+
 # # To insert a single document into the database,
 # # insert_one() function is used
 # @app.route('/insert-one/<name>/<id>/', methods=['GET'])

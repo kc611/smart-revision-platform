@@ -74,5 +74,27 @@ router.post('/build-report', (req, res) => {
     });
 });
 
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+var FormData = require('form-data');
+var fs = require('fs');
+
+router.post('/upload-file', upload.single('pdf'), async (req,res) => {
+  console.log(req.file)
+
+
+  const form = new FormData();
+  form.append(req.file.name, fs.createReadStream(req.file.path));
+  
+  const response = await axios({
+      method: 'post',
+      url: 'http://localhost:5000/upload-file',
+      data: form,
+      headers: {
+          'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+      },
+  });
+
+})
 
 module.exports = router;
