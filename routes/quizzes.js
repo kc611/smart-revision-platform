@@ -50,6 +50,7 @@ router.post("/submit", isUser, async (req,res) => {
   var correct_resp = 0;
   var incorrect_resp = 0;
   var unanswered_resp= 0;
+  var report_reqs = {}; 
 
   for (i = 0; i < num_questions; i++) {
     curr_response = req.body[i.toString()];
@@ -57,13 +58,14 @@ router.post("/submit", isUser, async (req,res) => {
       curr_response = "-1";
       unanswered_resp = unanswered_resp+1;
     }else{
-      if(curr_response == curr_quiz.questions[i].correct_option){
+      if(curr_response == curr_quiz.questions[i].answer){
         correct_resp = correct_resp+1;
       }else{
         incorrect_resp = incorrect_resp + 1;
       }
     }
     responses[i] = curr_response;
+    report_reqs[i] = "0";
   }
 
   const responseObject = {
@@ -74,12 +76,12 @@ router.post("/submit", isUser, async (req,res) => {
     "num_questions":req.body.num_questions,
     "incorrect_resp":incorrect_resp,
     "unanswered_resp":unanswered_resp,
-    "quiz_name":req.body.quiz_name
+    "quiz_name":req.body.quiz_name,
+    "report_reqs":report_reqs
   }
 
-  var response_code = response_collection.insertOne(responseObject);
+  response_collection.insertOne(responseObject);
 
-  router.post('/build-report',data={"quiz_code":req.body.quiz_code,"response_code":response_code._id});
 });
 
 module.exports = router;

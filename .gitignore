@@ -1,4 +1,6 @@
 node_modules/
 FlaskAPI/question_adder.py
+FlaskAPI/instance/
+FlaskAPI/pdf_adder.py
 .env
 uploads/

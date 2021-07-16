@@ -4,7 +4,7 @@ import requests
 import ast
 import base64
 import gridfs
-connection_url = 'mongodb+srv://admin123:admin123@cluster0.x9kcg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+connection_url = 'mongodb://127.0.0.1:27017'
 
 client = pymongo.MongoClient(connection_url)
 

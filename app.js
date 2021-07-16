@@ -61,6 +61,10 @@ app.use(function(req,res,next){
   next();
 });
 
+var cors = require('cors')
+
+app.use(cors()) // Use this after the variable declaration
+
 app.use("/", require("./routes/index"));
 app.use("/api",require("./routes/api"));
 app.use("/users", require("./routes/users"));

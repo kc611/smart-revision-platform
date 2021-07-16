@@ -79,6 +79,7 @@ var upload = multer({ dest: 'uploads/' })
 var FormData = require('form-data');
 var fs = require('fs');
 
+
 router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   console.log(req.file);
 
@@ -99,32 +100,5 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
 
 })
 
-router.get('/get-file',(req,res) => {
-
-  // form.append("subject",req.body.subject)
-  // TODO : Do this dynamically
-  form = {"username":"admin123@gmail.com"}
-  
-  axios.post(
-    'http://localhost:5000/get-file',
-    JSON.stringify(form)
-  ).then((http_res) => {
-    // TODO: We have the binary data display it somehow
-    res.contentType("application/pdf");
-    return res.send("./tmp/curr_file.pdf");
-    // fs.writeFile("./tmp/curr_file.pdf", http_res, "binary",function(err) {
-    //   if (err) return console.log(err);
-    //   console.log("file is saved");
-      
-    // })
-
-  })
-  .catch((error) => {
-    console.error("Error in api.js build-quiz request");
-    console.log(error)
-  });
-
-
-})
 
 module.exports = router;

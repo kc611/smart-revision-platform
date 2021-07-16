@@ -2,7 +2,7 @@
 # Thi is where algorithms will be used to build customized quizzes and reading suggestions
 
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import pymongo
 import time
 import requests
@@ -12,10 +12,15 @@ from datetime import datetime
 from flask import jsonify
 
 # Following MongoDB key hidden for security purposes. Flask will not run without this key.
-from question_adder import connection_url
+# from question_adder import connection_url
+
+connection_url = 'mongodb://127.0.0.1:27017'
 
 app = Flask(__name__)
 client = pymongo.MongoClient(connection_url)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 # Database
 Database = client.get_database('myFirstDatabase')
@@ -96,25 +101,43 @@ def upload_file():
     pdf_file = open(uploads_dir+ "/sample.pdf", "wb")
     pdf_file.write(pdf)
     pdf_file.close()
-# TODO: Delete after uploaded to database
+    # TODO: Delete after uploaded to database
 
     return jsonify({'status':'Done'})
 
-@app.route('/get-file',methods=['GET'])
+from flask import make_response, send_file
+import io
+
+@app.route('/get-file',methods=['GET','POST'])
+@cross_origin()
 def get_file():
-    # Get This dynamically
-    db = client.get_database("ABVIIITM")
-    fs = gridfs.GridFS(db,collection='dsa_notes')
-    filelist = list(db['dsa_notes.files'].find({"filename":"dsa1.pdf"},{"_id": 1, "filename": 1})) 
+    content = request.get_data()
+    dict_str = content.decode("UTF-8")
+    user_data = ast.literal_eval(dict_str)
+
+    print(user_data)
+    
+    db = client.get_database(user_data["_database"])
+    subject = user_data["subject"]
+    filename = user_data["filename"]
+
+    fs = gridfs.GridFS(db, collection = subject+'_notes')
+    filelist = list(db[subject + '_notes.files'].find({"filename":filename},{"_id": 1, "filename": 1})) 
     print(filelist)
     fileid = filelist[0]['_id']
-    fobj = fs.get(fileid)
+    fobj = fs.get(fileid).read()
+    return send_file(
+                     io.BytesIO(fobj),
+                     attachment_filename='%s.pdf' % filename,
+                     mimetype='application/pdf'
+               )
 
-    # f = open(uploads_dir+ "/sampledown.pdf", "wb")
-    # f.write()
-    # f.close()
-
-    return fobj.read()
+@app.route('/build-suggestion',methods=['POST'])
+def build_suggestion():
+    content = request.get_data()
+    dict_str = content.decode("UTF-8")
+    report_data = ast.literal_eval(dict_str)
+    return jsonify({'status':'Done'})
 
 # # To insert a single document into the database,
 # # insert_one() function is used
