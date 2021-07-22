@@ -70,6 +70,7 @@ app.use("/api",require("./routes/api"));
 app.use("/users", require("./routes/users"));
 app.use("/notes",require("./routes/notes"));
 app.use("/quizzer",require("./routes/quizzes"));
+app.use("/reading",require("./routes/reading"));
 app.use("/database",require("./routes/mongo_reqs"));
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 

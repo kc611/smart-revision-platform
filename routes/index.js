@@ -38,12 +38,72 @@ router.get('/reports', isUser, async (req,res)=>{
     const curr_response = await response_collection.findOne({_id:new mongo.ObjectID(response_code)});
     const curr_quiz = await quiz_collection.findOne({_id:new mongo.ObjectID(curr_response['quiz_code'])});
 
-    res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz});
+    var all_built = true;
+
+    for(i=0;i<curr_quiz['num_questions'];i++){
+        if(curr_response['report_reqs'][i]=="0"){
+            all_built = false;
+        }
+    }
+
+    var curr_info = {
+        "all_built": all_built,
+        "response_code":response_code
+    }
+
+    res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz,curr_info:curr_info});
 });
 
-router.get('/suggestions', isUser, (req, res) => {
-    res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions"});
+router.get('/suggestions', isUser, async (req, res) => {
+
+    await client.connect();
+
+    //TODO: get username dynamically
+    const user_database = client.db("admin123");
+    const quiz_collection = user_database.collection("quizzes");
+
+    var resp_data = []
+
+    const curr_quiz = await quiz_collection.find({'show_in_suggestions':true}).forEach(
+        function(curr_resp) { 
+            var curr_resp_data = {
+                "quiz_name":curr_resp.quiz_name,
+                "quiz_code":curr_resp._id,
+                "num_questions":curr_resp.num_questions,
+                "subject":curr_resp.subject,
+            } 
+            resp_data.push(curr_resp_data);
+        }
+    );
+    
+    res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions", suggestions:resp_data});
 });
+
+router.get('/suggestions/view', isUser, async (req, res) => {
+
+    await client.connect();
+
+    //TODO: get username dynamically
+    const user_database = client.db("admin123");
+    const quiz_collection = user_database.collection("quizzes");
+
+    var resp_data = []
+
+    const curr_quiz = await quiz_collection.find({'show_in_suggestions':true}).forEach(
+        function(curr_resp) { 
+            var curr_resp_data = {
+                "quiz_name":curr_resp.quiz_name,
+                "quiz_code":curr_resp._id,
+                "num_questions":curr_resp.num_questions,
+                "subject":curr_resp.subject,
+            } 
+            resp_data.push(curr_resp_data);
+        }
+    );
+    
+    res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions", suggestions:resp_data});
+});
+
 
 router.get('/inventory', isUser, (req, res) => {
     res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory"});

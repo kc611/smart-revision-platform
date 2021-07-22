@@ -71,7 +71,17 @@
             </div>
         </div>
         <hr>
-        <p class="text-4xl font-bold text-gray-700 w-100 text-center mt-12">Question-wise Analysis</p>
+        <div class="grid grid-cols-2 my-4">
+            <% if ( curr_info.all_built ) { %>
+                <p class="text-4xl font-bold text-gray-700 w-100 text-center mt-6">Question-wise Analysis</p>
+            <% } else { %>
+                <p class="text-4xl font-bold text-gray-700 w-100 text-center mt-6">Question-wise Analysis</p>
+                <div onclick="build_all()" class="bg-blue-300 rounded-full py-4 px-12 font-bold text-white text-xl hover:bg-blue-500 mt-12 ml-auto mr-12 transition- duration-500 w-max h-max">
+                    Build all Suggestions
+                </div>
+            <% } %>   
+        </div>
+        
         <div>
 
             <% for (var i=0; i < curr_quiz.questions.length; i++) {%>
@@ -140,8 +150,19 @@
                         <p class="mx-2"><%= curr_quiz.questions[i].explain %></p>
                     </div>
                     <div class="mx-auto">
-                        <p class="font-bold text-center">Suggested Reading:</p>
-                        <i data-feather="file-text" style="height: auto; width: 80%;" class="mt-2 mx-auto"></i>
+                        <input type="hidden" id = "suggestion_state_holder_<%= i %>" value="<%= curr_response.report_reqs[i] %>"/>
+                        <% if ( curr_response.report_reqs[i] == "0" ) { %>
+                            <p id="suggestion_state_text_<%= i %>" class="font-bold text-center">Build Suggestions:</p>
+                            <i id="suggestion_state_icon_<%= i %>" data-feather="edit" style="height: auto; width: 80%;" class="mt-2 mx-auto" onclick="build_suggestion(<%= i %>)"></i>
+                           
+                        <% } else { %>
+                            <p id="suggestion_state_text_<%= i %>" class="font-bold text-center">Suggested reading:</p>
+                            <a href="">
+                                <i id="suggestion_state_icon_<%= i %>" data-feather="file-text" style="height: auto; width: 80%;" class="mt-2 mx-auto" onclick="go_to_suggestions(<%= i %>)"></i>
+                            </a>
+                        <% } %>   
+
+                        
                     </div>
                 </div>
             </div>
@@ -174,7 +195,66 @@
             },
         },
     });
+    console.log("ran")
 
     feather.replace()
 
+    async function build_all(){
+        console.log("Clicked build all")
+        var num_questions = "<%= curr_response.num_questions %>";
+
+        for(j=0;j<num_questions;j++){
+            await build_suggestion(j)
+        }
+         
+        location.reload();
+    }
+
+    async function build_suggestion(question_number){
+        curr_username = "<%= currentUser.username %>";
+        curr_state_holder = document.getElementById("suggestion_state_holder_"+question_number)
+        curr_state_text = document.getElementById("suggestion_state_text_"+question_number)
+        curr_state_icon = document.getElementById("suggestion_state_icon_"+question_number)
+
+        curr_state = curr_state_holder.value
+        curr_quiz_code = "<%= curr_response.quiz_code %>";
+        curr_respose_code = "<%= curr_info.response_code %>";
+
+        if(curr_state == "0"){
+            curr_state = "1";
+            curr_state_holder.value = curr_state;
+            curr_state_text.innerHTML = "Processing request";
+            
+            const res = await fetch(
+                `http://localhost:5000/build-suggestion`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "http://localhost:3000",
+                        "Access-Control-Allow-Credentials": "true"
+                    },
+                    body: JSON.stringify({
+                        "username":curr_username,
+                        "quiz_code":curr_quiz_code,
+                        "response_code":curr_respose_code,
+                        "question_number":question_number
+                    }),
+                }
+            );
+
+            
+             
+        }
+
+        console.log("done")
+        console.log(question_number)
+        
+        return question_number;
+    }
+
+    function go_to_suggestions(question_number){
+        // Redirect to suggestions
+        // window.location.replace="/dashboard";
+    }
 </script>

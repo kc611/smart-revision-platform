@@ -74,6 +74,7 @@ def build_quiz():
         'quiz_time':quiz_time,
         'quiz_name':quiz_name,
 		'questions': questions,
+        'show_in_suggestions':False,
 	}
     query = user_quizzes.insert_one(quiz_object)
     print(query.inserted_id)
@@ -132,12 +133,60 @@ def get_file():
                      mimetype='application/pdf'
                )
 
+import time
+from bson.objectid import ObjectId
+from bson.binary import Binary
+
 @app.route('/build-suggestion',methods=['POST'])
 def build_suggestion():
     content = request.get_data()
     dict_str = content.decode("UTF-8")
-    report_data = ast.literal_eval(dict_str)
-    return jsonify({'status':'Done'})
+    req_data = ast.literal_eval(dict_str)
+    print(req_data)
+
+    username = req_data["username"].split("@")[0]
+    db = client.get_database(username)
+    user_suggestions = db["suggestions"]
+
+    question_number = req_data['question_number']
+    orig_quiz_code = req_data['quiz_code']
+    orig_quiz = {'_id':ObjectId(orig_quiz_code)}
+   
+
+    sugg_query = user_suggestions.find_one({'question_number':question_number,'quiz_code':orig_quiz_code})
+
+    if sugg_query is not None:
+        return jsonify({'status':'Already present','suggestion_code':str(sugg_query['_id'])})
+
+    orig_quiz = db['quizzes'].find_one(orig_quiz)
+
+    db['quizzes'].update_one({'_id':orig_quiz['_id']},{"$set":{'show_in_suggestions':True}})
+
+    # TODO: Handle this and render properly back in Nodejs
+    db['responses'].update_one({'_id':ObjectId(req_data['response_code'])},{"$set":{'report_reqs.'+str(question_number):"1"}})
+
+    with open("dsa1_5.pdf", "rb") as f:
+        encoded1 = Binary(f.read())
+    with open("dsa1_6.pdf", "rb") as f:
+        encoded2 = Binary(f.read())
+    with open("dsa1_7.pdf", "rb") as f:
+        encoded3 = Binary(f.read())
+
+    suggestion_object = {
+		'created_on': datetime.now(),
+        'question_number':question_number,
+        "quiz_code":orig_quiz_code,
+        'suggestion_1':encoded1,
+        'suggestion_2':encoded2,
+        'suggestion_3':encoded3
+	}
+    
+    suggestion_query = user_suggestions.insert_one(suggestion_object)
+
+    print(suggestion_query.inserted_id)
+    # secs = int(report_data['question_number'])
+    # time.sleep(5-secs)
+    return jsonify({'status':'Done','suggestion_code':str(suggestion_query.inserted_id)})
 
 # # To insert a single document into the database,
 # # insert_one() function is used

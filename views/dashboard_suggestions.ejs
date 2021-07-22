@@ -1,1 +1,28 @@
-<div>Suggestions page Not Yet Ready</div>
+<h2 class="font-bold mt-12 pb-2 border-b border-gray-200">Your Reading Suggestions:</h2>
+
+<div class="mt-8 grid grid-cols-3">
+  <% for (var i=0; i < suggestions.length; i++) {%>
+
+  <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
+    <div class="m-4">
+      
+      <span class="font-bold"><%= suggestions[i].quiz_name %></span>
+
+      <div class="w-100 flex">
+        <div>
+          <span class="block text-gray-500 text-sm">Subject: <%= suggestions[i].subject %></span>
+          <span class="block text-gray-500 text-sm">No. of questions: <%= suggestions[i].num_questions %></span>
+        </div>
+        
+        <a
+          href="/reading/collection?quiz_code=<%= suggestions[i].quiz_code %>"
+          class="ml-auto"
+          ><span class="text-blue-600 text-sm">View Suggestions >>></span></a
+        >
+      </div>
+    </div>
+  </div>
+
+  <% } %>
+</div>
+
