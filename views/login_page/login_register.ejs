@@ -1,16 +1,12 @@
 <body>
+  <script src="/static/FontAwesome.js"></script>
+  <link rel="stylesheet" href="/static/login_page_style.css" />
+  <script src="/static/sweetalert.min.js"></script>
   <div class="container" style="max-width: inherit;">
     <div class="forms-container">
       <div class="signin-signup">
         <form action="/users/login" method="POST" class="sign-in-form">
           <h2 class="title">Sign in</h2>
-          <!-- <% if(error && error.length > 0) { %>
-          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Holy smokes!</strong>
-            <span class="block sm:inline">Looks like you entered the wrong password.</span>
-            <strong class="font-bold"> X </strong>
-          </div>
-          <% } %> -->
           <div class="input-field">
             <i class="fas fa-user"></i>
             <input type="text" placeholder="Username" name="username"/>
@@ -33,7 +29,12 @@
           </div>
           <div class="input-field">
             <i class="fas fa-id-card"></i>
-            <input type="text" placeholder="Organization" name="organization"/>
+            <input list="organizations" placeholder="Organization" pattern="<%= resp_data.org_pattern %>" name="organization"/>
+            <datalist id="organizations">
+              <% for (var i=0; i < resp_data.org_list.length; i++) {%>
+                <option value="<%= resp_data.org_list[i] %>">
+              <% } %>
+            </datalist>
           </div>
           <input type="submit" class="btn" value="Sign up" />
         </form>
@@ -71,5 +72,64 @@
   
   <script src="/static/login_page_utilities.js"></script>
 
-  <link rel="stylesheet" href="/static/tailwind/tailwind_classic.css" />
+  <% if(error && error.length > 0) { %>
+    <script>
+        swal("Error: <%= error %>",{
+          buttons: false,
+        });
+    </script> 
+    <style>
+      .swal-overlay {
+        background-color: transparent;
+      }
+      .swal-modal {
+        /* border: 1px solid black; */
+        box-shadow: 0 0 6px rgb(255 73 55);
+        border-radius: 25px;
+        vertical-align: top;
+        /* background-color: rgb(233, 103, 109); */
+      }
+      .swal-text:first-child {
+      margin-top: 20px;
+      }
+      .swal-text:last-child {
+      margin-bottom: 20px;
+      }
+    </style>
+  <% } %>
+
+  <% if(success && success.length > 0) { %>
+    <script>
+        swal("Success: <%= success %>",{
+          buttons: false,
+        });
+    </script> 
+    <style>
+      .swal-overlay {
+        background-color: transparent;
+      }
+      .swal-modal {
+        /* border: 1px solid black; */
+        box-shadow: 0 0 6px rgb(55 255 55);
+        border-radius: 25px;
+        vertical-align: top;
+        /* background-color: rgb(233, 103, 109); */
+      }
+      .swal-text:first-child {
+      margin-top: 20px;
+      }
+      .swal-text:last-child {
+      margin-bottom: 20px;
+      }
+    </style>
+  <% } %>
+
+  <% if(resp_data.sign_up) { %>
+    <script>
+      container.classList.add("sign-up-mode");
+    </script>
+  <% } %>
+    
+  
+  
 </body>

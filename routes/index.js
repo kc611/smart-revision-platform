@@ -3,29 +3,22 @@ var router = express.Router();
 const mongo = require("mongodb");
 const uri = require("../config/keys").MongoURI;
 const client = new mongo.MongoClient(uri,{ useUnifiedTopology: true });
+const utils = require('./utils')
 
-router.get('/', (req, res) => {
+router.get('/', utils.to_dashboard_if_user, (req, res) => {
     res.render('landing_page/landing_page');
 });
 
 
-function isUser(req, res, next) {
-    if(req.isAuthenticated()){
-        return next();
-    } else{
-        return res.redirect("/users/login");
-    }
-}
-
-router.get('/dashboard', isUser, (req, res) => {
+router.get('/dashboard', utils.continue_if_user, (req, res) => {
     res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});
 });
 
-router.get('/quizzes', isUser, (req,res)=>{
+router.get('/quizzes', utils.continue_if_user, (req,res)=>{
     res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes"});
 });
 
-router.get('/reports', isUser, async (req,res)=>{
+router.get('/reports', utils.continue_if_user, async (req,res)=>{
     const response_code = req.query.response_code;
 
     await client.connect();
@@ -54,7 +47,7 @@ router.get('/reports', isUser, async (req,res)=>{
     res.render("reports_main",{layout:'./reports_layout',title:"Report on "+curr_quiz.quiz_name,curr_response:curr_response,curr_quiz:curr_quiz,curr_info:curr_info});
 });
 
-router.get('/suggestions', isUser, async (req, res) => {
+router.get('/suggestions', utils.continue_if_user, async (req, res) => {
 
     await client.connect();
 
@@ -79,7 +72,7 @@ router.get('/suggestions', isUser, async (req, res) => {
     res.render("dashboard_suggestions", {layout: './dashboard_base', title:"Reading Suggestions", suggestions:resp_data});
 });
 
-router.get('/suggestions/view', isUser, async (req, res) => {
+router.get('/suggestions/view', utils.continue_if_user, async (req, res) => {
 
     await client.connect();
 
@@ -105,16 +98,16 @@ router.get('/suggestions/view', isUser, async (req, res) => {
 });
 
 
-router.get('/inventory', isUser, (req, res) => {
+router.get('/inventory', utils.continue_if_user, (req, res) => {
     res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory"});
 });
 
-router.get('/profile', isUser, (req, res) => {
+router.get('/profile', utils.continue_if_user, (req, res) => {
     res.render("dashboard_profile",{layout: './dashboard_base', title:"Profile Settings"});
 });
 
 
-router.get('/user-reports',isUser, async (req,res)=>{
+router.get('/user-reports',utils.continue_if_user, async (req,res)=>{
 
     await client.connect();
     //TODO: get username dynamcally

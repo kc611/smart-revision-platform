@@ -13,6 +13,14 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    is_admin:{
+        type:Boolean,
+        required:true
+    },
+    verified:{
+        type:Boolean,
+        required:true
+    }
 });
 
 

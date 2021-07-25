@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const axios = require("axios");
 var nodemailer = require('nodemailer');
+const API_PATH = require("../config/keys").API_PATH;
 
 router.post('/contact', (req, res) => {
   var transporter = nodemailer.createTransport({
@@ -45,7 +46,7 @@ router.post('/build-quiz', (req, res) => {
   };
 
   axios
-    .post("http://localhost:5000/build-quiz",JSON.stringify(curr_data))
+    .post(API_PATH + "/build-quiz",JSON.stringify(curr_data))
     .then((http_res) => {
       res.json({ message: 'done',quiz_code: JSON.stringify(http_res.data).split("\"")[3]});
     })
@@ -64,7 +65,7 @@ router.post('/build-report', (req, res) => {
   };
 
   axios
-    .post("http://localhost:5000/build-report",JSON.stringify(curr_data))
+    .post(API_PATH + "/build-report",JSON.stringify(curr_data))
     .then((http_res) => {
       //Do something?
     })
@@ -91,7 +92,7 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   
   const response = await axios({
       method: 'post',
-      url: 'http://localhost:5000/upload-file',
+      url: API_PATH + '/upload-file',
       data: form,
       headers: {
           'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
