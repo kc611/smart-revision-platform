@@ -1,0 +1,67 @@
+<div class="
+    bg-blue-400
+    shadow-md
+    w-full
+    px-10
+    py-2
+    flex
+    justify-start
+    items-center
+  ">
+  <a href="/inventory">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#fff">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+</a>
+<!-- TODO: Name here dynamically -->
+    <div class="text-4xl text-white mx-8 my-4">Admin's Inventory</div>
+</div>
+
+<div class="w-full">
+    <h2 class="font-bold mt-12 pb-2 border-b border-gray-200 w-4/5 mx-auto">Notes:</h2>
+
+<div class="mt-8 grid grid-cols-3 w-4/5 mx-auto">
+  <% for (var i=0; i < curr_notes.length; i++) {%>
+
+    <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
+      <div class="m-4">
+        
+        <span class="font-bold"><%= curr_notes[i].book_name %></span>
+  
+        <div class="w-100 flex">
+          <div>
+            <span class="block text-gray-500 text-sm">By : <%= curr_notes[i].author_name %> </span>
+            <span class="block text-gray-500 text-sm">File : <%= curr_notes[i].file_name %> </span>
+          </div>
+          
+          <a
+            href="/notes/view?type=org&file_name=<%= curr_notes[i].file_name %>&subject=<%= curr_info.subject %>"
+            class="ml-auto"
+            ><span class="text-blue-600">Click to view >>></span></a
+          >
+        </div>
+      </div>
+    </div>
+  
+    <% } %>
+
+    <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
+        <div class="m-4">
+          
+    <!-- TODO: Make this proper interface -->
+          <div class="w-100 flex">
+            <div>
+              Upload New Notes.
+            </div>
+            <form action="/api/upload-file" method="POST" enctype="multipart/form-data">
+                <input type="hidden" value="<%= curr_info.subject %>" name="subject" class="subject">
+                <input type="file" name="pdf" /> <br />
+                <input type="submit" value="Upload File" />
+            </form>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+</div>

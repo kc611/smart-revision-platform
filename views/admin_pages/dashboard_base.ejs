@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title><%= title %></title>
+
+  <link rel="stylesheet"
+    href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" />
+</head>
+
+<body>
+  <div class="grid grid-cols-5 w-screen h-screen">
+    <!-- Sidebar -->
+    <div class="h-100 bg-blue-400">
+      <!-- Main logo -->
+      <div class="my-12 w-100">
+        <p class="w-100 text-center font-bold text-3xl text-white"><span class="lab la-accusoft mx-2"></span>Smart Revise</p>
+      </div>
+
+      <hr class="fading-hr">
+
+      <!-- Sidebar Buttons -->
+      <div class="my-12 w-100">
+        <a href="dashboard">
+          <div class="my-8 mx-auto duration-700 text-center w-3/5 bg-transparent text-white text-xl py-2 px-4 border-t-2 border-b-2 rounded-lg border-transparent hover:border-white">
+            Dashboard
+          </div>
+        </a>
+        <a href="verify-users">
+          <div class="my-8 mx-auto duration-700 text-center w-3/5 bg-transparent text-white text-xl py-2 px-4 border-t-2 border-b-2 rounded-lg border-transparent hover:border-white">
+            Verify Student Profiles
+          </div>
+        </a>
+        <a href="inventory">
+          <div class="my-8 mx-auto duration-700 text-center w-3/5 bg-transparent text-white text-xl py-2 px-4 border-t-2 border-b-2 rounded-lg border-transparent hover:border-white">
+            Upload Notes and Quiz Questions
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="col-span-4 overflow-y-hidden">
+    
+        <div class="bg-white shadow-md w-full px-10 py-2 flex space-betweeen">
+          <!-- TODO: Make bars do something or remove them -->
+          <div class="text-2xl my-auto mr-auto text-black"><span class="las la-bars mr-4"></span><%= title %></div>
+          <div class="flex">
+            <!-- TODO: First word of Name and make it coloured -->
+            <div class="bg-gray-200 h-12 w-12 text-2xl text-center p-2 my-auto mx-2 rounded-full">
+              ?
+            </div>
+            <div class="pr-10">
+              <!-- TODO: Make this Dynamic -->
+              <div class="text-xl text-black"><%= currentUser.username %></div>
+              <div class="text-black">Organization: <%= currentUser.organization %></div>
+          </div>
+          </div>
+        </div>
+
+      <div class="h-full w-full p-12">
+        <%- body %>
+      </div>
+    </div>
+  </div>
+
+
+
+  <link rel="stylesheet" href="/static/tailwind/tailwind_classic.css" />
+</body>
+<style>
+  .fading-hr {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0));
+}
+</style>
+</html>
