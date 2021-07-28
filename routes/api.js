@@ -88,6 +88,7 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   form.append(req.file.name, fs.createReadStream(req.file.path));
   form.append("subject",req.body.subject)
   // TODO : Do this dynamically
+  form.append("type","usr")
   form.append("username","admin123@gmail.com")
   
   const response = await axios({

@@ -1,15 +1,22 @@
 # The Flask Backend of the project
 # Thi is where algorithms will be used to build customized quizzes and reading suggestions
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response, send_file
 from flask_cors import CORS, cross_origin
 import pymongo
 import time
 import requests
 import ast
+import io
 from datetime import datetime
+import os
+import gridfs
+import base64
+import time
+from bson.objectid import ObjectId
+from bson.binary import Binary
 
-from flask import jsonify
+uploads_dir = os.path.join(app.instance_path, 'uploads')
 
 # Following MongoDB key hidden for security purposes. Flask will not run without this key.
 # from question_adder import connection_url
@@ -90,11 +97,6 @@ def build_report():
     report_data = ast.literal_eval(dict_str)
     return jsonify({'status':'Done'})
 
-import os
-import gridfs
-import base64
-uploads_dir = os.path.join(app.instance_path, 'uploads')
-
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
     pdf = request.get_data()
@@ -105,9 +107,6 @@ def upload_file():
     # TODO: Delete after uploaded to database
 
     return jsonify({'status':'Done'})
-
-from flask import make_response, send_file
-import io
 
 @app.route('/get-file',methods=['GET','POST'])
 @cross_origin()
@@ -133,9 +132,7 @@ def get_file():
                      mimetype='application/pdf'
                )
 
-import time
-from bson.objectid import ObjectId
-from bson.binary import Binary
+
 
 @app.route('/build-suggestion',methods=['POST'])
 def build_suggestion():

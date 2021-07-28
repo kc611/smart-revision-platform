@@ -1,0 +1,50 @@
+<script lang="js">
+    window.onload = function onloadFunction() {
+        pdfCall()
+    }
+
+    async function pdfCall() {
+        var isLoading = true;
+        
+        var _database = "<%= curr_info._database %>";
+        var subject = "<%= curr_info.subject %>";
+        var filename = "<%= curr_info.filename %>";
+        
+        const res = await fetch(
+            `http://localhost:5000/get-file`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': 'http://localhost:3000',
+                    'Access-Control-Allow-Credentials': 'true',
+                },
+                body: JSON.stringify({
+                    "subject":subject,
+                    "filename":filename,
+                    "_database":_database
+                }),
+            }
+        );
+        console.log("done0")
+
+        const blob_res = await res.blob()
+        console.log(blob_res)
+
+        const blob = await new Blob([blob_res], {
+            type: "application/pdf",
+        });
+        url = URL.createObjectURL(blob_res);
+        decrypted = true;
+        console.log("done")
+        console.log(url)
+
+        pdf_view = document.getElementById("pdfview");
+        pdfview.data = url;
+        isLoading = false;
+    }
+
+</script>
+
+
+<object type="application/pdf" width="100%" height="800px" id="pdfview" />
