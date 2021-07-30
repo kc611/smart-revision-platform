@@ -37,8 +37,8 @@ router.post('/contact', (req, res) => {
 // This request goes to external flask API
 router.post('/build-quiz', (req, res) => {
   var curr_data = {
-    "username":"admin123@gmail.com",
-    "organization":"ABVIIITM",
+    "username":req.user.username,
+    "organization":req.user.organization.replace(" ",""),
     "subject":req.body.subject,
     "num_questions":req.body.num_questions,
     "quiz_time":req.body.quiz_time,
@@ -58,8 +58,8 @@ router.post('/build-quiz', (req, res) => {
 
 router.post('/build-report', (req, res) => {
   var curr_data = {
-    "username":"admin123@gmail.com",
-    "organization":"ABVIIITM",
+    "username":req.user.username,
+    "organization":req.user.organization,
     "response_code":req.body.response_code,
     "quiz_code":req.body.quiz_code
   };

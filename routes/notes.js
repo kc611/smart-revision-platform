@@ -5,14 +5,14 @@ const uri = require("../config/keys").MongoURI;
 const client = new mongo.MongoClient(uri,{ useUnifiedTopology: true });
 var fs = require('fs');
 var Grid = require('gridfs');
+const utils = require('./utils')
 
-router.get("/org", async (req, res) => {
+router.get("/org", utils.continue_if_user, async (req, res) => {
     const subject = req.query.subject;
 
     await client.connect();
 
-    //TODO: get username dynamically
-    const org_database = client.db("ABVIIITM");
+    const org_database = client.db(req.user.organization.replace(" ",""));
     const file_collection = org_database.collection(subject+"_notes.files");
     
     var resp_data = []
@@ -35,13 +35,12 @@ router.get("/org", async (req, res) => {
     res.render("inventory_pages/inventory_org",{layout:'./inventory_pages/inventory_base', curr_notes:resp_data, curr_info:curr_info});
 });
 
-router.get("/usr", async (req, res) => {
+router.get("/usr", utils.continue_if_user, async (req, res) => {
   const subject = req.query.subject;
 
   await client.connect();
 
-  //TODO: get username dynamically
-  const org_database = client.db("ABVIIITM");
+  const org_database = client.db(req.user.organization.replace(" ",""));
   const file_collection = org_database.collection(subject+"_notes.files");
   
   var resp_data = []
@@ -64,7 +63,7 @@ router.get("/usr", async (req, res) => {
   res.render("inventory_pages/inventory_usr",{layout:'./inventory_pages/inventory_base', curr_notes:resp_data, curr_info:curr_info});
 });
 
-router.get('/view',(req, res) => {
+router.get('/view', utils.continue_if_user, async (req, res) => {
   const subject = req.query.subject;
   const filename = req.query.filename;
   const type = req.query.type;
@@ -73,16 +72,24 @@ router.get('/view',(req, res) => {
   if(type=="usr"){
     _database = req.user;
   }else if(type=="org"){
-    // TODO: Get this dynamically
-    _database = "ABVIIITM"
+    _database = req.user.organization.replace(" ","")
   }
+
+  await client.connect();
+
+  const org_database = client.db(_database);
+  const file_collection = org_database.collection(subject+"_notes.files");
+
+  var curr_file = await file_collection.findOne({"filename":filename});
 
   var _curr_info = {
     "subject":subject,
     "filename":filename,
-    "_database":_database
+    "_database":_database,
+    "author_name":curr_file["author_name"],
+    "book_name":curr_file["book_name"]
   }
-  // console.log(_curr_info)
+
   res.render("inventory_pages/view_page",{layout:'./blank_base',title:"Viewing File", curr_info:_curr_info});
 })
 

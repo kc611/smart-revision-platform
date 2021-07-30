@@ -16,7 +16,7 @@ import time
 from bson.objectid import ObjectId
 from bson.binary import Binary
 
-uploads_dir = os.path.join(app.instance_path, 'uploads')
+
 
 # Following MongoDB key hidden for security purposes. Flask will not run without this key.
 # from question_adder import connection_url
@@ -28,6 +28,7 @@ client = pymongo.MongoClient(connection_url)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+uploads_dir = os.path.join(app.instance_path, 'uploads')
 
 # Database
 Database = client.get_database('myFirstDatabase')

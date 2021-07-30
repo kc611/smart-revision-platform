@@ -14,8 +14,44 @@ router.get('/dashboard', utils.continue_if_user, (req, res) => {
     res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});
 });
 
-router.get('/quizzes', utils.continue_if_user, (req,res)=>{
-    res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes"});
+router.get('/quizzes', utils.continue_if_user, async (req,res)=>{
+    await client.connect();
+
+    const user_database = client.db(req.user.username);
+    const org_database = client.db(req.user.organization.replace(" ",""));
+    const quiz_collection = user_database.collection("quizzes");
+    var past_built_quiz = []
+
+    await quiz_collection.find().forEach(
+        function(curr_resp) { 
+            var curr_resp_data = {
+                "quiz_name":curr_resp.quiz_name,
+                "quiz_code":curr_resp._id,
+                "num_questions":curr_resp.num_questions,
+                "subject":curr_resp.subject,
+                "quiz_time":curr_resp.quiz_time
+            } 
+            past_built_quiz.push(curr_resp_data);
+        }
+    );
+
+    const subject_collection = org_database.collection("subjects");
+
+    var subject_data = []
+    var code_to_subj = {}
+
+    await subject_collection.find({}).forEach(
+        function(curr_resp) { 
+            var curr_resp_data = {
+                "subject_name":curr_resp.subject_name,
+                "subject_code":curr_resp.subject_code
+            } 
+            code_to_subj[curr_resp.subject_code] = curr_resp.subject_name;
+            subject_data.push(curr_resp_data);
+        }
+    );
+    
+    res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes",past_built_quiz:past_built_quiz,subject_data:subject_data,code_to_subj:code_to_subj});
 });
 
 router.get('/reports', utils.continue_if_user, async (req,res)=>{
@@ -23,8 +59,7 @@ router.get('/reports', utils.continue_if_user, async (req,res)=>{
 
     await client.connect();
 
-    //TODO: get username dynamically
-    const user_database = client.db("admin123");
+    const user_database = client.db(req.user.username);
     const response_collection = user_database.collection("responses");
     const quiz_collection = user_database.collection("quizzes");
     
@@ -51,8 +86,7 @@ router.get('/suggestions', utils.continue_if_user, async (req, res) => {
 
     await client.connect();
 
-    //TODO: get username dynamically
-    const user_database = client.db("admin123");
+    const user_database = client.db(req.user.username);
     const quiz_collection = user_database.collection("quizzes");
 
     var resp_data = []
@@ -76,8 +110,7 @@ router.get('/suggestions/view', utils.continue_if_user, async (req, res) => {
 
     await client.connect();
 
-    //TODO: get username dynamically
-    const user_database = client.db("admin123");
+    const user_database = client.db(req.user.username);
     const quiz_collection = user_database.collection("quizzes");
 
     var resp_data = []
@@ -98,8 +131,27 @@ router.get('/suggestions/view', utils.continue_if_user, async (req, res) => {
 });
 
 
-router.get('/inventory', utils.continue_if_user, (req, res) => {
-    res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory"});
+router.get('/inventory', utils.continue_if_user, async (req, res) => {
+    await client.connect();
+
+    const user_database = client.db(req.user.organization.replace(" ",""));
+    const quiz_collection = user_database.collection("subjects");
+
+    var resp_data = []
+
+    await quiz_collection.find({}).forEach(
+        function(curr_resp) { 
+            var curr_resp_data = {
+                "subject_name":curr_resp.subject_name,
+                "subject_code":curr_resp.subject_code
+            } 
+            resp_data.push(curr_resp_data);
+        }
+    );
+    
+
+
+    res.render("dashboard_inventory",{layout: './dashboard_base', title:"Inventory", resp_data:resp_data});
 });
 
 router.get('/profile', utils.continue_if_user, (req, res) => {
@@ -110,8 +162,8 @@ router.get('/profile', utils.continue_if_user, (req, res) => {
 router.get('/user-reports',utils.continue_if_user, async (req,res)=>{
 
     await client.connect();
-    //TODO: get username dynamcally
-    const user_database = client.db("admin123");
+
+    const user_database = client.db(req.user.username);
     const response_collection = user_database.collection("responses");
     var resp_data = []
     const all_resp = await response_collection.find({}).forEach(

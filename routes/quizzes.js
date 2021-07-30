@@ -17,7 +17,7 @@ router.get("/quiz", isUser, async (req, res) => {
 
   await client.connect();
   //TODO: get username dynamcally
-  const user_database = client.db("admin123");
+  const user_database = client.db(req.user.username);
   const quiz_collection = user_database.collection("quizzes");
   const query = {
     _id:new mongo.ObjectID(quiz_code)
@@ -37,8 +37,8 @@ router.post("/submit", isUser, async (req,res) => {
   var num_questions = req.body.num_questions;
   var responses = {};
   await client.connect();
-  //TODO: get username dynamcally
-  const user_database = client.db("admin123");
+
+  const user_database = client.db(req.user.username);
   const response_collection = user_database.collection("responses");
   const quiz_collection = user_database.collection("quizzes");
   const query = {
