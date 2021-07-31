@@ -87,9 +87,14 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   const form = new FormData();
   form.append(req.file.name, fs.createReadStream(req.file.path));
   form.append("subject",req.body.subject)
+  form.append("type",req.body.type)
+  form.append("user_name",req.user.username)
+  form.append("organization", req.user.organization.replace(" ",""))
+
   // TODO : Do this dynamically
-  form.append("type","usr")
-  form.append("username","admin123@gmail.com")
+  form.append("book_name","samplebookname")
+  form.append("author_name", "sampleauthorname")
+  form.append("file_name","samplefilename")
   
   const response = await axios({
       method: 'post',

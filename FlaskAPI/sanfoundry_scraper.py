@@ -74,8 +74,9 @@ for i in range (1,100):
 
     explain = [curr for curr in curr_quest if curr.startswith('Explanation:')]
     explain = explain[0].split(": ")[1]
+    print(quest_statement)
 
-    insertOne(quest_statement, soup.title.text, correct_opt, options, explain)
+    # insertOne(quest_statement, soup.title.text, correct_opt, options, explain)
     # print(quest_statement)
     # print(options)
     # print(correct_opt)

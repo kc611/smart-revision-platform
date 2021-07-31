@@ -100,12 +100,29 @@ def build_report():
 
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
-    pdf = request.get_data()
+    
     # TODO: Separate other data and the actual file bytes data
-    pdf_file = open(uploads_dir+ "/sample.pdf", "wb")
-    pdf_file.write(pdf)
-    pdf_file.close()
-    # TODO: Delete after uploaded to database
+    # pdf_file = open(uploads_dir+ "/sample.pdf", "wb")
+    # pdf_file.write(pdf)
+    # pdf_file.close()
+    pdf_data = request.get_data()
+    if request.form.get("type") == "usr":
+        Database = client.get_database(request.form.get("user_name"))
+    else:
+        Database = client.get_database(request.form.get("organization"))
+    curr_subject = request.form.get("subject")
+
+    SampleTable = Database[curr_subject+"_notes"]
+    db = Database
+    fs = gridfs.GridFS(db,collection=curr_subject+'_notes')
+   
+    with fs.new_file(
+        filename=request.form.get("file_name"),
+        book_name=request.form.get("book_name"),
+        author_name=request.form.get("author_name"),
+        # encoding="utf-8"
+        ) as fp:
+        fp.write(pdf_data)
 
     return jsonify({'status':'Done'})
 

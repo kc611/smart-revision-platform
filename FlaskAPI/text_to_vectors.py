@@ -1,98 +1,70 @@
 # importing required modules 
 import string
 import re
-
-from pdfminer.high_level import extract_text
-import numpy as np
-
-
-def to_sentence(text):
-    # Split page into paragraphs
-    paras = text.split("\n\n")
-    res = []
-    for _para in paras:
-        # For each paragraph
-        sentences = _para.split(".")
-
-
-        _text = _text.replace("\n", " ")
-        _text = _text.replace(string.punctuation, " ")
-        res.append(_text)
-    # text = text.split(".")
-    return res
-  
-
-
-useful_pages = [6, 6]
-for i in range(useful_pages[0]-1, useful_pages[1]):
-    text = extract_text('/home/kc611/Desktop/Btech Minor Project/smart-revision-platform/FlaskAPI/dsa1.pdf', page_numbers=[i])
-    text = text.lower()
-    text = to_sentence(text)
-    print(text)
-    text_file = open("/home/kc611/Desktop/Btech Minor Project/smart-revision-platform/FlaskAPI/dsa1.txt", "w")
-    text_file.write(str(text))
-    text_file.close()
-
-
-    
+import numpy as np   
 from scipy import spatial
 import gensim.downloader as api
 import numpy as np
 
-model = api.load("glove-wiki-gigaword-50") #choose from multiple models https://github.com/RaRe-Technologies/gensim-data
+#choose from multiple models https://github.com/RaRe-Technologies/gensim-data
+model = api.load("glove-wiki-gigaword-50") 
 
-s0 = 'Mark zuckerberg owns the facebook company'
-s1 = 'Facebook company ceo is mark zuckerberg'
-s2 = 'Microsoft is owned by Bill gates'
-s3 = 'How to learn japanese'
 
-def preprocess(s):
-    return [i.lower() for i in s.split()]
+s0 = 'Which of these best describes an array?'
+s1 = 'How do you initialize an array in C?'
+s2 = 'How do you instantiate an array in Java?'
+s3 = 'Which of the following is the correct way to declare a multidimensional array in Java?'
+s4 = 'What is the output of the following Java code?'
+s5 = 'What is the output of the following Java code?'
+s6 = 'When does the Array Index Out Of Bounds Exception occur?'
+s7 = 'Which of the following concepts make extensive use of arrays?'
+s8 = 'What are the advantages of arrays?'
+s9 = 'What are the disadvantages of arrays?'
+s10 = 'Assuming int is of 4 bytes, what is the size of int arr[15];?'
+s11 = 'In general, the index of the first element in an array is __________'
+s12 = 'Elements in an array are accessed _____________'
 
-def get_vector(s):
-    return np.sum(np.array([model[i] for i in preprocess(s)]), axis=0)
+query = 'How do you instantiate an array in Python?'
 
-print(np.array([model[i] for i in preprocess(s0)]))
-# print('s0 vs s1 ->',1 - spatial.distance.cosine(get_vector(s0), get_vector(s1)))
-# print('s0 vs s2 ->', 1 - spatial.distance.cosine(get_vector(s0), get_vector(s2)))
-# print('s0 vs s3 ->', 1 - spatial.distance.cosine(get_vector(s0), get_vector(s3)))
-# from keras.preprocessing.text import Tokenizer
-# from keras.preprocessing.sequence import pad_sequences
+all_sent = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12]
+all_vects = []
+with open("./stop_words.txt", "r") as f:
+  stop_words = f.read().split("\n")
 
-# tokenizer=Tokenizer()
-# tokenizer.fit_on_texts(documents_df.documents_cleaned)
-# tokenized_documents=tokenizer.texts_to_sequences(documents_df.documents_cleaned)
-# tokenized_paded_documents=pad_sequences(tokenized_documents,maxlen=64,padding='post')
-# vocab_size=len(tokenizer.word_index)+1
+def preprocess_sentence(_sent):
+  #  Remove unnecessary characters
+  _sent = _sent.replace("?", "")
+  _sent = _sent.replace("_", "")
+  _sent = _sent.replace(",", "")
+  _sent = _sent.replace(".", "")
 
-# # reading Glove word embeddings into a dictionary with "word" as key and values as word vectors
-# embeddings_index = dict()
+  _sent = _sent.lower()
+  _sent = _sent.split(" ")
+  # Remove Stop words
+  _sent = [_word for _word in _sent if _word not in stop_words]
+  
+  curr_vects = []
+  for _word in _sent:
+    try:
+      curr_vec = model[_word]
+      curr_vects.append(curr_vec)
+    except:
+      pass
+  return np.array(curr_vects)
 
-# with open('glove.6B.100d.txt') as file:
-#     for line in file:
-#         values = line.split()
-#         word = values[0]
-#         coefs = np.asarray(values[1:], dtype='float32')
-#         embeddings_index[word] = coefs
-    
-# # creating embedding matrix, every row is a vector representation from the vocabulary indexed by the tokenizer index. 
-# embedding_matrix=np.zeros((vocab_size,100))
 
-# for word,i in tokenizer.word_index.items():
-#     embedding_vector = embeddings_index.get(word)
-#     if embedding_vector is not None:
-#         embedding_matrix[i] = embedding_vector
-        
-# # calculating average of word vectors of a document weighted by tf-idf
-# document_embeddings=np.zeros((len(tokenized_paded_documents),100))
-# words=tfidfvectoriser.get_feature_names()
+for _sent in all_sent:
+  curr_vects = preprocess_sentence(_sent)
+  all_vects.append(curr_vects)
 
-# # instead of creating document-word embeddings, directly creating document embeddings
-# for i in range(documents_df.shape[0]):
-#     for j in range(len(words)):
-#         document_embeddings[i]+=embedding_matrix[tokenizer.word_index[words[j]]]*tfidf_vectors[i][j]
-        
+query_vects = preprocess_sentence(query)
 
-pairwise_similarities=cosine_similarity(document_embeddings)
-pairwise_differences=euclidean_distances(document_embeddings)
+from sklearn.neighbors import NearestNeighbors
+import numpy as np
+
+nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(query_vects)
+
+for i in range(0, len(all_vects)):
+  distances, indices = nbrs.kneighbors(all_vects[i])
+  print(i," : ", np.sum(distances))
 

@@ -55,6 +55,7 @@
             </div>
             <form action="/api/upload-file" method="POST" enctype="multipart/form-data">
                 <input type="hidden" value="<%= curr_info.subject %>" name="subject" class="subject">
+                <input type="hidden" value="usr" name="type" class="type">
                 <input type="file" name="pdf" /> <br />
                 <input type="submit" value="Upload File" />
             </form>
