@@ -151,6 +151,25 @@ def get_file():
                )
 
 
+@app.route('/get-suggestion',methods=['GET','POST'])
+@cross_origin()
+def get_sugg():
+    content = request.get_data()
+    dict_str = content.decode("UTF-8")
+    user_data = ast.literal_eval(dict_str)
+
+    print(user_data)
+    
+    db = client.get_database(user_data["_database"])
+    sugg_collection = db["suggestions"]
+    sugg_data = sugg_collection.find_one({"quiz_code":user_data["quiz_code"],"question_number":int(user_data["question_number"])})
+
+    filename = "sample"
+    return send_file(
+                     io.BytesIO(sugg_data["suggestion_"+user_data["sugg_ind"]]),
+                     attachment_filename='%s.pdf' % filename,
+                     mimetype='application/pdf'
+               )
 
 @app.route('/build-suggestion',methods=['POST'])
 def build_suggestion():
