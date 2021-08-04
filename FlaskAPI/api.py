@@ -16,11 +16,6 @@ import time
 from bson.objectid import ObjectId
 from bson.binary import Binary
 
-
-
-# Following MongoDB key hidden for security purposes. Flask will not run without this key.
-# from question_adder import connection_url
-
 connection_url = 'mongodb://127.0.0.1:27017'
 
 app = Flask(__name__)
@@ -30,18 +25,43 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
-# Database
-Database = client.get_database('myFirstDatabase')
-# Users Table
-users_table = Database.users
 
 
-@app.route('/', methods=['GET'])
-def home():
-    return "<h1>This is the API for Smart Revision Platform</h1><p>Please go to xyz to access our main site.</p>"
+def build_quiz_from_data(num_questions, org_question_collection, incorr_question_collection):
+    num_random_questions = int(num_questions/2)
+    num_personalized_questions = num_questions - random_questions
+    all_org_questions = list(question_collection.find({}))
+
+    personalized_questions = []
+    
+    # Take incorrect question from prev 5 quizzes
+    all_incorrect_questions = list(incorr_question_collection.find({}))
+
+    #  Randomly select half of the required questions out of them
+    if len(all_incorrect_questions) < num_personalized_questions:
+        num_random_questions = num_questions - len(all_incorrect_questions)
+        num_personalized_questions = len(all_incorrect_questions)
+        temp_personalized_questions = all_incorrect_questions
+    else:
+        random_indices = np.random.randint(0, len(all_incorrect_questions), num_personalized_questions)  #Make sure these are non repeating
+        temp_personalized_questions = [all_incorrect_questions[_index] for _index in random_indices]
+
+    # replace each incorrect question with its nearest question
+    personalized_questions = temp_personalized_questions
+    personalized_question_statements = [_question["question"] for _question in personalized_questions]
+
+    # From random question select those who aren't selected till now by comparing the question statements
+    random_questions = [_question for _question in all_org_questions if _question["question"] not in personalized_question_statements] #Check if this works or compare the question statements
+    
+    questions = personalized_questions + random_questions
+
+    for i in range(0, questions):
+        questions[i].pop('_id')
+
+    return questions
 
 @app.route('/build-quiz',methods=['POST'])
-def build_quiz():
+def build_quiz_endpoint():
 
     content = request.get_data()
     dict_str = content.decode("UTF-8")
@@ -55,21 +75,23 @@ def build_quiz():
     quiz_time = int(user_data["quiz_time"])
     quiz_name = user_data["quiz_name"]
 
+    # Database
+    Database = client.get_database('myFirstDatabase')
+    # Users Table
+    users_table = Database.users
     queryUser = {"username": username}
     query = users_table.find_one(queryUser)
-    # print(query)
-    # If query exists / user authenticated then continue else error
+    # If query exists then continue else error
     
 
     # Fetch the specified number of questions
     org_database = client.get_database(user_organization)
     question_collection = org_database[f"{quiz_subject}_questions"]
-    questions = list(question_collection.find({}).limit(quiz_num_questions))
-    for i in range(0, quiz_num_questions):
-        questions[i].pop('_id')
+    usr_database = client.get_database(username.split("@")[0])
+    incorr_question_collection = user_data["incorrects"]
 
     # We can build a personalized quiz here, since we have the database data available.
-    
+    questions = build_quiz_from_data(quiz_num_questions, question_collection, incorr_question_collection)
 
     #Save the questions as a quiz in database
     user_database = client.get_database(username.split('@')[0])
@@ -100,11 +122,6 @@ def build_report():
 
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
-    
-    # TODO: Separate other data and the actual file bytes data
-    # pdf_file = open(uploads_dir+ "/sample.pdf", "wb")
-    # pdf_file.write(pdf)
-    # pdf_file.close()
     pdf_data = request.get_data()
     if request.form.get("type") == "usr":
         Database = client.get_database(request.form.get("user_name"))
@@ -186,7 +203,6 @@ def build_suggestion():
     orig_quiz_code = req_data['quiz_code']
     orig_quiz = {'_id':ObjectId(orig_quiz_code)}
    
-
     sugg_query = user_suggestions.find_one({'question_number':question_number,'quiz_code':orig_quiz_code})
 
     if sugg_query is not None:
@@ -196,7 +212,6 @@ def build_suggestion():
 
     db['quizzes'].update_one({'_id':orig_quiz['_id']},{"$set":{'show_in_suggestions':True}})
 
-    # TODO: Handle this and render properly back in Nodejs
     db['responses'].update_one({'_id':ObjectId(req_data['response_code'])},{"$set":{'report_reqs.'+str(question_number):"1"}})
 
     with open("dsa1_5.pdf", "rb") as f:
@@ -216,63 +231,12 @@ def build_suggestion():
 	}
     
     suggestion_query = user_suggestions.insert_one(suggestion_object)
-
     print(suggestion_query.inserted_id)
-    # secs = int(report_data['question_number'])
-    # time.sleep(5-secs)
     return jsonify({'status':'Done','suggestion_code':str(suggestion_query.inserted_id)})
 
-# # To insert a single document into the database,
-# # insert_one() function is used
-# @app.route('/insert-one/<name>/<id>/', methods=['GET'])
-# def insertOne(name, id):
-# 	queryObject = {
-# 		'Name': name,
-# 		'ID': id
-# 	}
-# 	query = SampleTable.insert_one(queryObject)
-# 	return "Query inserted...!!!"
-
-# # To find the first document that matches a defined query,
-# # find_one function is used and the query to match is passed
-# # as an argument.
-# @app.route('/find-one/<argument>/<value>/', methods=['GET'])
-# def findOne(argument, value):
-# 	queryObject = {argument: value}
-# 	query = SampleTable.find_one(queryObject)
-# 	query.pop('_id')
-# 	return jsonify(query)
-
-# # To find all the entries/documents in a table/collection,
-# # find() function is used. If you want to find all the documents
-# # that matches a certain query, you can pass a queryObject as an
-# # argument.
-# @app.route('/find/', methods=['GET'])
-# def findAll():
-# 	query = SampleTable.find()
-# 	output = {}
-# 	i = 0
-# 	for x in query:
-# 		output[i] = x
-# 		output[i].pop('_id')
-# 		i += 1
-# 	return jsonify(output)
-
-
-# # To update a document in a collection, update_one()
-# # function is used. The queryObject to find the document is passed as
-# # the first argument, the corresponding updateObject is passed as the
-# # second argument under the '$set' index.
-# @app.route('/update/<key>/<value>/<element>/<updateValue>/', methods=['GET'])
-# def update(key, value, element, updateValue):
-# 	queryObject = {key: value}
-# 	updateObject = {element: updateValue}
-# 	query = SampleTable.update_one(queryObject, {'$set': updateObject})
-# 	if query.acknowledged:
-# 		return "Update Successful"
-# 	else:
-# 		return "Update Unsuccessful"
-
+@app.route('/', methods=['GET'])
+def home():
+    return "<h1>This is the API for Smart Revision Platform</h1><p>Please go to xyz to access our main site.</p>"
 
 if __name__ == '__main__':
 	app.run(debug=True)

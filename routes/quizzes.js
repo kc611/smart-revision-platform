@@ -40,6 +40,7 @@ router.post("/submit", isUser, async (req,res) => {
 
   const user_database = client.db(req.user.username);
   const response_collection = user_database.collection("responses");
+  const incorrect_collection = user_database.collection("incorrects");
   const quiz_collection = user_database.collection("quizzes");
   const query = {
     _id:new mongo.ObjectID(req.body.quiz_code)
@@ -51,6 +52,7 @@ router.post("/submit", isUser, async (req,res) => {
   var incorrect_resp = 0;
   var unanswered_resp= 0;
   var report_reqs = {}; 
+  var incorrect_questions = []
 
   for (i = 0; i < num_questions; i++) {
     curr_response = req.body[i.toString()];
@@ -61,6 +63,7 @@ router.post("/submit", isUser, async (req,res) => {
       if(curr_response == curr_quiz.questions[i].answer){
         correct_resp = correct_resp+1;
       }else{
+        incorrect_questions.push(curr_quiz.questions[i])
         incorrect_resp = incorrect_resp + 1;
       }
     }
@@ -79,8 +82,15 @@ router.post("/submit", isUser, async (req,res) => {
     "quiz_name":req.body.quiz_name,
     "report_reqs":report_reqs
   }
+  const incorrectObject = {
+    "quiz_code":req.body.quiz_code,
+    "submit_time":new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}),
+    "num_questions":incorrect_questions.length,
+    "questions":incorrect_questions
+  }
 
   response_collection.insertOne(responseObject);
+  incorrect_collection.insertOne(incorrectObject)
 
 });
 
