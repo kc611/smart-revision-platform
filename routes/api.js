@@ -3,6 +3,7 @@ var router = express.Router();
 const axios = require("axios");
 var nodemailer = require('nodemailer');
 const API_PATH = require("../config/keys").API_PATH;
+var path = require('path');
 
 router.post('/contact', (req, res) => {
   var transporter = nodemailer.createTransport({
@@ -76,35 +77,54 @@ router.post('/build-report', (req, res) => {
 });
 
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
+// var upload = multer({ dest: 'uploads/' })
 var FormData = require('form-data');
 var fs = require('fs');
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/")
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  },
+})
+
+const upload = multer({ storage: storage })
 
 router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   console.log(req.file);
+  console.log(__dirname)
+  var read_stream = fs.createReadStream(path.join(req.file.path))
 
-  const form = new FormData();
-  form.append(req.file.name, fs.createReadStream(req.file.path));
+  read_stream.on('end', function() {
+
+    const form = new FormData();
+  form.append(req.file.filename, read_stream);
   form.append("subject",req.body.subject)
   form.append("type",req.body.type)
   form.append("user_name",req.user.username)
   form.append("organization", req.user.organization.replace(" ",""))
 
   // TODO : Do this dynamically
-  form.append("book_name","samplebookname")
-  form.append("author_name", "sampleauthorname")
-  form.append("file_name","samplefilename")
+  form.append("book_name",req.body.book_name)
+  form.append("author_name", req.body.author_name)
+  form.append("file_name",req.file.filename)
   
-  const response = await axios({
+  axios({
       method: 'post',
       url: API_PATH + '/upload-file',
-      data: form,
+      data: form.getBuffer(),
       headers: {
           'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
       },
   })
 
+  })
+  
+  
+
+  res.redirect("/notes/"+req.body.type+"?subject="+req.body.subject)
 })
 
 

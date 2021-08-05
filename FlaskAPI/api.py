@@ -17,7 +17,8 @@ from bson.objectid import ObjectId
 from bson.binary import Binary
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
-
+from PyPDF2 import PdfFileWriter, PdfFileReader
+from io import BytesIO
 
 connection_url = 'mongodb://127.0.0.1:27017'
 
@@ -89,8 +90,7 @@ def build_quiz_from_data(num_questions, org_question_collection, incorr_question
     for i in range(0, len(random_questions)):
         random_questions[i].pop("_id")
 
-    print(len(personalized_questions))
-    print(len(random_questions))
+
     questions = personalized_questions + random_questions
 
     return questions
@@ -102,7 +102,7 @@ def build_quiz_endpoint():
     dict_str = content.decode("UTF-8")
     user_data = ast.literal_eval(dict_str)
 
-    print(user_data)
+    # print(user_data)
     username = user_data["username"]
     user_organization = user_data["organization"]
     quiz_subject = user_data["subject"]
@@ -141,7 +141,7 @@ def build_quiz_endpoint():
         'show_in_suggestions':False,
 	}
     query = user_quizzes.insert_one(quiz_object)
-    print(query.inserted_id)
+    # print(query.inserted_id)
 
     # Send the quiz code back to node server
     return jsonify({'quiz_code':str(query.inserted_id)})
@@ -156,7 +156,12 @@ def build_report():
 
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
-    pdf_data = request.get_data()
+
+    # from .file_vectorizer import vectorize_and_update
+
+    # console.log(request.form)
+    print("here")
+    pdf_data = ''
     if request.form.get("type") == "usr":
         Database = client.get_database(request.form.get("user_name"))
     else:
@@ -184,7 +189,7 @@ def get_file():
     dict_str = content.decode("UTF-8")
     user_data = ast.literal_eval(dict_str)
 
-    print(user_data)
+    # print(user_data)
     
     db = client.get_database(user_data["_database"])
     subject = user_data["subject"]
@@ -192,7 +197,7 @@ def get_file():
 
     fs = gridfs.GridFS(db, collection = subject+'_notes')
     filelist = list(db[subject + '_notes.files'].find({"filename":filename},{"_id": 1, "filename": 1})) 
-    print(filelist)
+
     fileid = filelist[0]['_id']
     fobj = fs.get(fileid).read()
     return send_file(
@@ -212,12 +217,35 @@ def get_sugg():
     print(user_data)
     
     db = client.get_database(user_data["_database"])
-    sugg_collection = db["suggestions"]
-    sugg_data = sugg_collection.find_one({"quiz_code":user_data["quiz_code"],"question_number":int(user_data["question_number"])})
+    quiz_collection = db["quizzes"]
+    quiz_data = quiz_collection.find_one({"_id":ObjectId(user_data["quiz_code"])})
+    sugg_query = quiz_data["questions"][int(user_data["question_number"])]["sugg_"+user_data["sugg_ind"]]
+    _id, _pg = sugg_query
 
-    filename = "sample"
+    curr_subject = quiz_data["subject"]
+    usr_file_collection = db[curr_subject+"_notes"]
+    org_db = client.get_database(user_data["_organization"].replace(" ",""))
+    org_file_collection = org_db[curr_subject+"_notes"]
+
+    sugg_note = org_file_collection.find_one({"_id":ObjectId(_id)})
+    fs = gridfs.GridFS(org_db, collection = curr_subject+"_notes")
+
+    # if sugg_note is None:
+    #     fs = gridfs.GridFS(db, collection = usr_file_collection)
+    #     sugg_note = usr_file_collection.find_one({"_id":ObjectId(_id)})
+
+    fobj = fs.get(ObjectId(_id)).read()
+
+    input_pdf = PdfFileReader(BytesIO(fobj))
+    output = PdfFileWriter()
+    output.addPage(input_pdf.getPage(_pg))
+    filename = "sample.pdf"
+    
+    new_io = BytesIO()
+    output.write(new_io)
+    new_io.seek(0)
     return send_file(
-                     io.BytesIO(sugg_data["suggestion_"+user_data["sugg_ind"]]),
+                     new_io,
                      attachment_filename='%s.pdf' % filename,
                      mimetype='application/pdf'
                )
@@ -227,7 +255,7 @@ def build_suggestion():
     content = request.get_data()
     dict_str = content.decode("UTF-8")
     req_data = ast.literal_eval(dict_str)
-    print(req_data)
+    # print(req_data)
 
     username = req_data["username"].split("@")[0]
     db = client.get_database(username)
@@ -248,25 +276,8 @@ def build_suggestion():
 
     db['responses'].update_one({'_id':ObjectId(req_data['response_code'])},{"$set":{'report_reqs.'+str(question_number):"1"}})
 
-    with open("dsa1_5.pdf", "rb") as f:
-        encoded1 = Binary(f.read())
-    with open("dsa1_6.pdf", "rb") as f:
-        encoded2 = Binary(f.read())
-    with open("dsa1_7.pdf", "rb") as f:
-        encoded3 = Binary(f.read())
-
-    suggestion_object = {
-		'created_on': datetime.now(),
-        'question_number':question_number,
-        "quiz_code":orig_quiz_code,
-        'suggestion_1':encoded1,
-        'suggestion_2':encoded2,
-        'suggestion_3':encoded3
-	}
-    
-    suggestion_query = user_suggestions.insert_one(suggestion_object)
-    print(suggestion_query.inserted_id)
-    return jsonify({'status':'Done','suggestion_code':str(suggestion_query.inserted_id)})
+    # print(suggestion_query.inserted_id)
+    return jsonify({'status':'Done'})
 
 @app.route('/', methods=['GET'])
 def home():

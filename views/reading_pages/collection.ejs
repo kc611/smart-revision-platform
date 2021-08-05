@@ -31,23 +31,23 @@
 
             <div class="border-solid border-4 m-8 p-8">
                 <p class="text-xl font-bold text-gray-400">Question <%= i+1 %>.</p>
-                <p class="text-xl font-bold mx-2"><%= curr_sugg[i].question %></h2>
+                <p class="text-xl font-bold mx-2"><%= curr_quiz.questions[i].question %></h2>
                 <div class="flex space-between m-2">
 
                     <div class="w-3/5">
                         <p class="text-xl font-bold">Explaination :</p>
-                        <p class="mx-2 text-xl">Correct Answer: <%= curr_sugg[i].answer %></p>
-                        <p class="mx-2 text-lg"><%= curr_sugg[i].explaination %></p>
+                        <p class="mx-2 text-xl">Correct Answer: <%= curr_quiz.questions[i].options[curr_quiz.questions[i].answer] %></p>
+                        <p class="mx-2 text-lg"><%= curr_quiz.questions[i].explain %></p>
                     </div>
                     <div class="mx-auto">
 
-                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= curr_sugg[i].question_number %>','1')">
+                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= i %>','1', '<%= curr_quiz.questions[i].sugg_1[0] %>')">
                             View Suggestions 1 >>>>
                         </div>
-                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= curr_sugg[i].question_number %>','2')">
+                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= i %>','2', '<%= curr_quiz.questions[i].sugg_2[0] %>')">
                             View Suggestions 2 >>>>
                         </div>
-                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= curr_sugg[i].question_number %>','3')">
+                        <div class="text-blue-600 text-lg m-2" onclick="show_pdf_data('<%= i %>','3', '<%= curr_quiz.questions[i].sugg_3[0] %>')">
                             View Suggestions 3 >>>>
                         </div>
 
@@ -83,7 +83,11 @@
   <div class="h-max w-4/5 bg-white card rounded-3xl shadow-md">
     <div class="w-full h-full">
       <div class="w-full h-max">
-        <h2 class="font-bold mt-12 pb-2 border-b border-gray-200 w-4/5 mx-auto text-xl">Content:</h2>
+        <div class="grid grid-cols-2">
+            <h2 class="ml-8 font-bold mt-12 pb-2 border-b border-gray-200mx-auto text-3xl">Contents:</h2>
+            <a id="go_to_orig" href=""><div class="bg-blue-300 rounded-full py-4 px-12 h-16 ml-auto mr-8 mt-12 w-max font-bold text-white text-xl hover:bg-blue-500 transition-duration-500">View Original >>> </div></a>
+        </div>
+        
         <object type="application/pdf" width="100%" height="800px" id="pdfview" class="h-max w-9/12 mx-auto my-12" data="">
             
         </object>
@@ -95,9 +99,10 @@
     function remove_popup (){
         window.location.reload();
     }
-    async function show_pdf_data (quest_num, index) {
+    async function show_pdf_data (quest_num, index, orig_notes_code) {
         pdf_view = document.getElementById("pdfview");
         var _database = "<%= curr_info._database %>";
+        var _organization = "<%= curr_info._organization %>";
         const res = await fetch(
             `http://localhost:5000/get-suggestion`,
             {
@@ -109,6 +114,7 @@
                 },
                 body: JSON.stringify({
                     "_database":_database,
+                    "_organization":_organization,
                     "question_number":quest_num,
                     "sugg_ind":index,
                     "quiz_code":"<%= curr_info.quiz_code %>"
@@ -129,7 +135,9 @@
         console.log(url)
 
         pdf_view = document.getElementById("pdfview");
+        go_to_orig = document.getElementById("go_to_orig");
         pdfview.setAttribute('data', url);;
+        go_to_orig.href = "/notes/view_by_id?id="+orig_notes_code+"&subject="+"<%= curr_quiz.subject %>";
         // pdfview.data = url;
         // isLoading = false;
         

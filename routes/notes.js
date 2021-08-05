@@ -40,7 +40,7 @@ router.get("/usr", utils.continue_if_user, async (req, res) => {
 
   await client.connect();
 
-  const org_database = client.db(req.user.organization.replace(" ",""));
+  const org_database = client.db(req.user.username);
   const file_collection = org_database.collection(subject+"_notes.files");
   
   var resp_data = []
@@ -70,7 +70,7 @@ router.get('/view', utils.continue_if_user, async (req, res) => {
   var _database;
 
   if(type=="usr"){
-    _database = req.user;
+    _database = req.user.username;
   }else if(type=="org"){
     _database = req.user.organization.replace(" ","")
   }
@@ -85,6 +85,30 @@ router.get('/view', utils.continue_if_user, async (req, res) => {
   var _curr_info = {
     "subject":subject,
     "filename":filename,
+    "_database":_database,
+    "author_name":curr_file["author_name"],
+    "book_name":curr_file["book_name"]
+  }
+
+  res.render("inventory_pages/view_page",{layout:'./blank_base',title:"Viewing File", curr_info:_curr_info});
+})
+
+router.get('/view_by_id', utils.continue_if_user, async (req, res) => {
+  const subject = req.query.subject;
+  const _id = req.query.id;
+
+  var _database = req.user.organization.replace(" ","")
+
+  await client.connect();
+
+  const org_database = client.db(_database);
+  const file_collection = org_database.collection(subject+"_notes.files");
+
+  var curr_file = await file_collection.findOne({"_id":new mongo.ObjectID(_id)});
+
+  var _curr_info = {
+    "subject":subject,
+    "filename":curr_file['filename'],
     "_database":_database,
     "author_name":curr_file["author_name"],
     "book_name":curr_file["book_name"]

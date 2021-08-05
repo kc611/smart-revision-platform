@@ -12,7 +12,6 @@ client = pymongo.MongoClient(connection_url)
 # Database
 Database = client.get_database('ABVIIITM')
 
-print("Enter subject:")
 subject = "dsa"
 
 SampleTable = Database[f"{subject}_questions"]
@@ -47,16 +46,37 @@ def preprocess_sentence(_sent):
   return curr_vects
 
 def insertOne(question,topic,answer,options,explain):
-	queryObject = {
+    print("Curr question: ",question)
+    # curr_id_1 = input()
+    # curr_pg_1 = int(input())
+    # curr_id_2 = input()
+    # curr_pg_2 = int(input())
+    # curr_id_3 = input()
+    # curr_pg_3 = int(input())
+    
+    curr_id = "60f12315401b73c194ec4aeb"
+    pg = 10
+    curr_id_1 = curr_id
+    curr_pg_1 = pg
+    curr_id_2 = curr_id
+    curr_pg_2 = pg + 1
+    curr_id_3 = curr_id
+    curr_pg_3 = pg + 2
+
+    queryObject = {
 		"question":question,
         "topic":topic,
         "answer":answer,
         "options":options,
         "explain":explain,
-        "vectorized":preprocess_sentence(question)
+        "vectorized":preprocess_sentence(question),
+        "vectorized_explain":preprocess_sentence(explain),
+        "sugg_1":[curr_id_1, curr_pg_1],
+        "sugg_2":[curr_id_2, curr_pg_2],
+        "sugg_3":[curr_id_3, curr_pg_3]
 	}
-	query = SampleTable.insert_one(queryObject)
-	return "Query inserted...!!!"
+    query = SampleTable.insert_one(queryObject)
+    return "Query inserted...!!!"
 
 
 # Make a request to https://codedamn-classrooms.github.io/webscraper-python-codedamn-classroom-website/

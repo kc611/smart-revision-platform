@@ -11,7 +11,7 @@ router.get('/', utils.to_dashboard_if_user, (req, res) => {
 
 
 router.get('/dashboard', utils.continue_if_user, (req, res) => {
-    res.render("dashboard_main",{layout: './dashboard_base', title:"Dashboard"});
+    res.redirect("quizzes")
 });
 
 router.get('/quizzes', utils.continue_if_user, async (req,res)=>{

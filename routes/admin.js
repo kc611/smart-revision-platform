@@ -30,7 +30,7 @@ router.post('/register', (req, res) => {
 });
 
 router.get('/dashboard', utils.continue_if_admin, (req, res) => {
-    res.render("admin_pages/dashboard_main",{layout:'./admin_pages/dashboard_base',title:"Admin Dashboard"});
+    res.redirect("verify-users")
 });
 
 
