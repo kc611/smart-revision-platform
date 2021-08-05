@@ -15,6 +15,9 @@ import base64
 import time
 from bson.objectid import ObjectId
 from bson.binary import Binary
+import numpy as np
+from sklearn.neighbors import NearestNeighbors
+
 
 connection_url = 'mongodb://127.0.0.1:27017'
 
@@ -25,17 +28,44 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
+def select_nearest_questions(personalized_question, all_org_questions):
+    all_vects = []
+    # Encode all example sentences
+    for _vect in all_org_questions:
+        curr_vects = _vect["vectorized"]
+        all_vects.append(curr_vects)
 
+    # Encode query sentence
+    query_vects = personalized_question["vectorized"]
 
-def build_quiz_from_data(num_questions, org_question_collection, incorr_question_collection):
+    # Fit the query string onto a nearest neighbour space
+    nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(query_vects)
+    curr_dist = 100000000
+    curr_ind = 0
+    for i in range(0, len(all_vects)):
+        # For every sentence calculate pairwise 1st nearest neighbour to every word
+        distances, indices = nbrs.kneighbors(all_vects[i])
+        # The distances give us pairwise nearest neighbour between current sentence and query sentence
+        # We sum those distances the lower the sum the nearer the meaning of those words (pairwise)
+        dist_sum = np.sum(distances)
+        if dist_sum < curr_dist:
+            curr_dist = dist_sum
+            curr_ind = i
+
+    return all_org_questions[i]
+
+def build_quiz_from_data(num_questions, org_question_collection, incorr_question_collection, quiz_subject):
     num_random_questions = int(num_questions/2)
-    num_personalized_questions = num_questions - random_questions
-    all_org_questions = list(question_collection.find({}))
+    num_personalized_questions = num_questions - num_random_questions
+    all_org_questions = list(org_question_collection.find({}))
 
     personalized_questions = []
     
     # Take incorrect question from prev 5 quizzes
-    all_incorrect_questions = list(incorr_question_collection.find({}))
+    all_incorrect_questions_collec = list(incorr_question_collection.find({"subject":quiz_subject}).limit(5))
+    all_incorrect_questions = []
+    for _collec in all_incorrect_questions_collec:
+        all_incorrect_questions.extend(_collec["questions"])
 
     #  Randomly select half of the required questions out of them
     if len(all_incorrect_questions) < num_personalized_questions:
@@ -43,20 +73,25 @@ def build_quiz_from_data(num_questions, org_question_collection, incorr_question
         num_personalized_questions = len(all_incorrect_questions)
         temp_personalized_questions = all_incorrect_questions
     else:
-        random_indices = np.random.randint(0, len(all_incorrect_questions), num_personalized_questions)  #Make sure these are non repeating
+        random_indices = np.random.choice(np.arange(0, len(all_incorrect_questions)), size=num_personalized_questions,replace=False)  
         temp_personalized_questions = [all_incorrect_questions[_index] for _index in random_indices]
-
+    
     # replace each incorrect question with its nearest question
-    personalized_questions = temp_personalized_questions
+    for i in range(0, len(temp_personalized_questions)):
+        personalized_questions.append(select_nearest_questions(temp_personalized_questions[i], all_org_questions))
+
     personalized_question_statements = [_question["question"] for _question in personalized_questions]
 
     # From random question select those who aren't selected till now by comparing the question statements
-    random_questions = [_question for _question in all_org_questions if _question["question"] not in personalized_question_statements] #Check if this works or compare the question statements
-    
-    questions = personalized_questions + random_questions
+    random_questions = [_question for _question in all_org_questions if _question["question"] not in personalized_question_statements] 
+    random_indices = np.random.choice(np.arange(0, len(random_questions)), size=num_random_questions,replace=False) 
+    random_questions = [random_questions[_index] for _index in random_indices]
+    for i in range(0, len(random_questions)):
+        random_questions[i].pop("_id")
 
-    for i in range(0, questions):
-        questions[i].pop('_id')
+    print(len(personalized_questions))
+    print(len(random_questions))
+    questions = personalized_questions + random_questions
 
     return questions
 
@@ -81,17 +116,16 @@ def build_quiz_endpoint():
     users_table = Database.users
     queryUser = {"username": username}
     query = users_table.find_one(queryUser)
-    # If query exists then continue else error
     
 
     # Fetch the specified number of questions
     org_database = client.get_database(user_organization)
     question_collection = org_database[f"{quiz_subject}_questions"]
     usr_database = client.get_database(username.split("@")[0])
-    incorr_question_collection = user_data["incorrects"]
+    incorr_question_collection = usr_database["incorrects"]
 
     # We can build a personalized quiz here, since we have the database data available.
-    questions = build_quiz_from_data(quiz_num_questions, question_collection, incorr_question_collection)
+    questions = build_quiz_from_data(quiz_num_questions, question_collection, incorr_question_collection, quiz_subject)
 
     #Save the questions as a quiz in database
     user_database = client.get_database(username.split('@')[0])

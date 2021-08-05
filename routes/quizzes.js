@@ -80,17 +80,22 @@ router.post("/submit", isUser, async (req,res) => {
     "incorrect_resp":incorrect_resp,
     "unanswered_resp":unanswered_resp,
     "quiz_name":req.body.quiz_name,
-    "report_reqs":report_reqs
+    "report_reqs":report_reqs,
+    "subject":curr_quiz.subject
   }
   const incorrectObject = {
     "quiz_code":req.body.quiz_code,
     "submit_time":new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}),
     "num_questions":incorrect_questions.length,
+    "subject":curr_quiz.subject,
     "questions":incorrect_questions
   }
 
   response_collection.insertOne(responseObject);
-  incorrect_collection.insertOne(incorrectObject)
+  if (incorrect_questions.length > 0){
+    incorrect_collection.insertOne(incorrectObject)
+  }
+    
 
 });
 

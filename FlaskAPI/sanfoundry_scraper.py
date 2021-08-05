@@ -16,6 +16,35 @@ print("Enter subject:")
 subject = "dsa"
 
 SampleTable = Database[f"{subject}_questions"]
+import gensim.downloader as api
+import numpy as np
+
+#choose from multiple models https://github.com/RaRe-Technologies/gensim-data
+model = api.load("glove-wiki-gigaword-50") 
+with open("./stop_words.txt", "r") as f:
+  stop_words = f.read().split("\n")
+
+def preprocess_sentence(_sent):
+  #  Remove unnecessary characters
+  _sent = _sent.replace("?", "")
+  _sent = _sent.replace("_", "")
+  _sent = _sent.replace(",", "")
+  _sent = _sent.replace(".", "")
+
+  _sent = _sent.lower()
+  _sent = _sent.split(" ")
+  # Remove Stop words
+  _sent = [_word for _word in _sent if _word not in stop_words]
+  
+  curr_vects = []
+  for _word in _sent:
+    try:
+      # Uses glove to encode the words into vectors
+      curr_vec = model[_word]
+      curr_vects.append(curr_vec.tolist())
+    except:
+      pass
+  return curr_vects
 
 def insertOne(question,topic,answer,options,explain):
 	queryObject = {
@@ -23,7 +52,8 @@ def insertOne(question,topic,answer,options,explain):
         "topic":topic,
         "answer":answer,
         "options":options,
-        "explain":explain
+        "explain":explain,
+        "vectorized":preprocess_sentence(question)
 	}
 	query = SampleTable.insert_one(queryObject)
 	return "Query inserted...!!!"
@@ -76,7 +106,7 @@ for i in range (1,100):
     explain = explain[0].split(": ")[1]
     print(quest_statement)
 
-    # insertOne(quest_statement, soup.title.text, correct_opt, options, explain)
+    insertOne(quest_statement, soup.title.text, correct_opt, options, explain)
     # print(quest_statement)
     # print(options)
     # print(correct_opt)

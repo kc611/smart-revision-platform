@@ -11,8 +11,7 @@ model = api.load("glove-wiki-gigaword-50")
 
 
 
-all_sent = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12]
-all_vects = []
+
 with open("./stop_words.txt", "r") as f:
   stop_words = f.read().split("\n")
 
@@ -34,6 +33,7 @@ def preprocess_sentence(_sent):
       # Uses glove to encode the words into vectors
       curr_vec = model[_word]
       curr_vects.append(curr_vec)
+      print(curr_vec.shape)
     except:
       pass
   return np.array(curr_vects)
@@ -52,6 +52,9 @@ s9 = 'What are the disadvantages of arrays?'
 s10 = 'Assuming int is of 4 bytes, what is the size of int arr[15];?'
 s11 = 'In general, the index of the first element in an array is __________'
 s12 = 'Elements in an array are accessed _____________'
+
+all_sent = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12]
+all_vects = []
 
 # Encode all example sentences
 for _sent in all_sent:

@@ -51,7 +51,7 @@ router.get('/quizzes', utils.continue_if_user, async (req,res)=>{
         }
     );
     
-    res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes",past_built_quiz:past_built_quiz,subject_data:subject_data,code_to_subj:code_to_subj});
+    res.render("dashboard_quizzes",{layout:'./dashboard_base',title:"Quizzes",past_built_quiz:past_built_quiz.slice(-3),subject_data:subject_data,code_to_subj:code_to_subj});
 });
 
 router.get('/reports', utils.continue_if_user, async (req,res)=>{
