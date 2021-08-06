@@ -1,10 +1,113 @@
 <h2 class="font-bold mt-4 pb-2 border-b border-gray-200">Add a curriculum subject:</h2>
-<form action="/admin/add-subject" method="POST">
-  <input type="text" name="subject_name" id="subject_name">
-  <!-- TODO:Subject Code must not contain spaces -->
-  <input type="text" name="subject_code" id="subject_code">
-  <input type="submit" class= "bg-blue-300 rounded-full py-4 px-12 w-max font-bold text-white text-xl hover:bg-blue-500 transition- duration-500 mt-8" value="Add Subject">
-</form>
+
+<div class="mx-auto flex">
+  <div class="w-2/5 mx-2 my-4 bg-white p-5 card rounded-3xl shadow-lg">
+    <form action="/admin/add-subject" method="POST">
+  
+      <div
+        class="
+          border
+          focus-within:border-blue-500 focus-within:text-blue-500
+          transition-all
+          duration-500
+          rounded
+          p-1
+          my-4
+        "
+      >
+        <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+          <p>
+            <label for="subject_name" class="bg-white font-bold px-1"
+              >Name of Subject:</label
+            >
+          </p>
+        </div>
+        <p>
+          <input
+            id="subject_name"
+            name="subject_name"
+            autocomplete="off"
+            tabindex="0"
+            type="text"
+            required
+            class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+          />
+        </p>
+      </div>
+
+      <div class="flex my-2">
+        <div
+          class="
+            border
+            focus-within:border-blue-500 focus-within:text-blue-500
+            transition-all
+            duration-500
+            rounded
+            p-1
+            mr-4
+            w-full
+          "
+        >
+          <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+            <p>
+              <label for="subject_code" class="bg-white font-bold px-1"
+                >Subject Code:</label
+              >
+            </p>
+          </div>
+          <p>
+            <input
+              id="subject_code"
+              required
+              name="subject_code"
+              autocomplete="false"
+              tabindex="0"
+              class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+            />
+          </p>
+        </div>
+      </div>
+
+      
+
+      <div class="w-100 flex flex-wrap">
+        <div></div>
+        <!-- <div class="
+        rounded-lg
+        ml-auto
+        font-bold
+        text-white
+        px-3
+        py-1
+        bg-blue-400
+        hover:shadow-inner
+        hover:bg-blue-700
+        transition-all
+        duration-700
+      " id="submit-button">
+        Upload >>>>
+    </div>  -->
+       
+     <input type="submit" class="
+     rounded-lg
+     ml-auto
+     font-bold
+     text-white
+     px-3
+     py-1
+     bg-blue-400
+     hover:shadow-inner
+     hover:bg-blue-700
+     transition-all
+     duration-700
+   " value="Add Subject to Organization >>>>">
+      </input>
+      </div>
+    </form>
+  </div>
+
+  
+</div>
 
 <h2 class="font-bold mt-4 pb-2 border-b border-gray-200">Upload Books and Notes recommended by this organization:</h2>
 <div class="mt-8 grid grid-cols-3">

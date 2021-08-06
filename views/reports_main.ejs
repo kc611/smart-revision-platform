@@ -157,7 +157,7 @@
                            
                         <% } else { %>
                             <p id="suggestion_state_text_<%= i %>" class="font-bold text-center">Suggested reading:</p>
-                            <a href="">
+                            <a href="reading/collection?quiz_code=<%= curr_response.quiz_code %>">
                                 <i id="suggestion_state_icon_<%= i %>" data-feather="file-text" style="height: auto; width: 80%;" class="mt-2 mx-auto" onclick="go_to_suggestions(<%= i %>)"></i>
                             </a>
                         <% } %>   
@@ -253,8 +253,8 @@
         return question_number;
     }
 
-    function go_to_suggestions(question_number){
-        // Redirect to suggestions
-        // window.location.replace="/dashboard";
-    }
+    // function go_to_suggestions(question_number){
+    //     // Redirect to suggestions
+    //     window.location.replace="/suggestions";
+    // }
 </script>

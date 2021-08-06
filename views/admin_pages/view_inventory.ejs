@@ -36,6 +36,133 @@
   <div class="text-4xl text-white mx-8 my-4">Admin's Inventory</div>
 </div>
 
+
+<h2 class="font-bold w-4/5 mx-auto mt-12 pb-2 border-b border-gray-200 mx-auto text-xl">Upload Notes:</h2>
+
+<div class="w-4/5 mx-auto flex">
+  <div class="w-2/5 mx-2 my-4 bg-white p-5 card rounded-3xl shadow-lg">
+    <form action="/api/upload-file" method="POST" enctype="multipart/form-data">
+      <input type="hidden" value="<%= curr_info.subject %>" name="subject" class="subject">
+      <input type="hidden" value="org" name="type" class="type">
+  
+      <div
+        class="
+          border
+          focus-within:border-blue-500 focus-within:text-blue-500
+          transition-all
+          duration-500
+          rounded
+          p-1
+          my-4
+        "
+      >
+        <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+          <p>
+            <label for="book_name" class="bg-white font-bold px-1"
+              >Name of Book:</label
+            >
+          </p>
+        </div>
+        <p>
+          <input
+            id="book_name"
+            name="book_name"
+            autocomplete="off"
+            tabindex="0"
+            type="text"
+            required
+            class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+          />
+        </p>
+      </div>
+
+      <div class="flex my-2">
+        <div
+          class="
+            border
+            focus-within:border-blue-500 focus-within:text-blue-500
+            transition-all
+            duration-500
+            rounded
+            p-1
+            mr-4
+            w-full
+          "
+        >
+          <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+            <p>
+              <label for="author_name" class="bg-white font-bold px-1"
+                >Author Name:</label
+              >
+            </p>
+          </div>
+          <p>
+            <input
+              id="author_name"
+              required
+              name="author_name"
+              autocomplete="false"
+              tabindex="0"
+              class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+            />
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="
+          border
+          focus-within:border-blue-500 focus-within:text-blue-500
+          transition-all
+          duration-500
+          rounded
+          p-1
+          my-4
+        "
+      >
+      <input type="file" name="pdf" id="file_input" /> <br />
+
+      </div>
+
+      <div class="w-100 flex flex-wrap">
+        <div></div>
+        <!-- <div class="
+        rounded-lg
+        ml-auto
+        font-bold
+        text-white
+        px-3
+        py-1
+        bg-blue-400
+        hover:shadow-inner
+        hover:bg-blue-700
+        transition-all
+        duration-700
+      " id="submit-button">
+        Upload >>>>
+    </div>  -->
+       
+     <input type="submit" class="
+     rounded-lg
+     ml-auto
+     font-bold
+     text-white
+     px-3
+     py-1
+     bg-blue-400
+     hover:shadow-inner
+     hover:bg-blue-700
+     transition-all
+     duration-700
+   " value="Upload >>>>">
+      </input>
+      </div>
+    </form>
+  </div>
+
+  
+</div>
+
 <div class="w-full">
   <h2 class="font-bold mt-12 pb-2 border-b border-gray-200 w-4/5 mx-auto">
     Notes:
@@ -71,21 +198,6 @@
 
     <% } %>
 
-    <div class="card rounded-3xl shadow-md border-t-4 border-blue-300 mx-8 my-4">
-      <div class="m-4">
-        
-  <!-- TODO: Make this proper interface -->
-        <div class="w-100 flex">
-          <div>
-            Upload New Notes.
-          </div>
-          <form action="upload-file" method="POST" enctype="multipart/form-data">
-              <input type="hidden" value="<%= curr_info.subject %>" name="subject" class="subject">
-              <input type="file" name="pdf" /> <br />
-              <input type="submit" value="Upload File" />
-          </form>
-        </div>
-      </div>
-    </div>
+ 
   </div>
 </div>
