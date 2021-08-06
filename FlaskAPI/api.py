@@ -26,7 +26,7 @@ app = Flask(__name__)
 client = pymongo.MongoClient(connection_url)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
+update = False
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
 def select_nearest_questions(personalized_question, all_org_questions):
@@ -53,7 +53,7 @@ def select_nearest_questions(personalized_question, all_org_questions):
             curr_dist = dist_sum
             curr_ind = i
 
-    return all_org_questions[i]
+    return i
 
 def build_quiz_from_data(num_questions, org_question_collection, incorr_question_collection, quiz_subject):
     num_random_questions = int(num_questions/2)
@@ -79,12 +79,12 @@ def build_quiz_from_data(num_questions, org_question_collection, incorr_question
     
     # replace each incorrect question with its nearest question
     for i in range(0, len(temp_personalized_questions)):
-        personalized_questions.append(select_nearest_questions(temp_personalized_questions[i], all_org_questions))
-
-    personalized_question_statements = [_question["question"] for _question in personalized_questions]
+        curr_question = select_nearest_questions(temp_personalized_questions[i], all_org_questions)
+        curr_question = all_org_questions.pop(i) # Removes from the list
+        personalized_questions.append(curr_question)
 
     # From random question select those who aren't selected till now by comparing the question statements
-    random_questions = [_question for _question in all_org_questions if _question["question"] not in personalized_question_statements] 
+    random_questions = all_org_questions
     random_indices = np.random.choice(np.arange(0, len(random_questions)), size=num_random_questions,replace=False) 
     random_questions = [random_questions[_index] for _index in random_indices]
     for i in range(0, len(random_questions)):
@@ -156,16 +156,13 @@ def build_report():
 
 @app.route('/upload-file',methods=['POST'])
 def upload_file():
-
-    # from .file_vectorizer import vectorize_and_update
-
-    # console.log(request.form)
-    print("here")
-    pdf_data = ''
+    pdf_data = request.get_data()
+    username = request.form.get("user_name")
+    org = request.form.get("organization")
     if request.form.get("type") == "usr":
-        Database = client.get_database(request.form.get("user_name"))
+        Database = client.get_database(username)
     else:
-        Database = client.get_database(request.form.get("organization"))
+        Database = client.get_database(org)
     curr_subject = request.form.get("subject")
 
     SampleTable = Database[curr_subject+"_notes"]
@@ -179,6 +176,9 @@ def upload_file():
         # encoding="utf-8"
         ) as fp:
         fp.write(pdf_data)
+    if update:
+        from .file_vectorizer import vectorize_and_update
+        vectorize_and_update(pdf_data, user_name, org, curr_subject)
 
     return jsonify({'status':'Done'})
 

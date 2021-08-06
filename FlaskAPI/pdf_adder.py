@@ -11,8 +11,6 @@ client = pymongo.MongoClient(connection_url)
 # Database
 Database = client.get_database('ABVIIITM')
 
-
-
 SampleTable = Database["dsa_notes"]
 
 def write_new_pdf(path):

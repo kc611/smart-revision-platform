@@ -9,9 +9,6 @@ import numpy as np
 #choose from multiple models https://github.com/RaRe-Technologies/gensim-data
 model = api.load("glove-wiki-gigaword-50") 
 
-
-
-
 with open("./stop_words.txt", "r") as f:
   stop_words = f.read().split("\n")
 
