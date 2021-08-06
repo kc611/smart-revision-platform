@@ -46,23 +46,6 @@ def preprocess_sentence(_sent):
   return curr_vects
 
 def insertOne(question,topic,answer,options,explain):
-    print("Curr question: ",question)
-    curr_id_1 = input()
-    curr_pg_1 = int(input())
-    curr_id_2 = input()
-    curr_pg_2 = int(input())
-    curr_id_3 = input()
-    curr_pg_3 = int(input())
-    
-    # curr_id = "60f12315401b73c194ec4aeb"
-    # pg = 10
-    # curr_id_1 = curr_id
-    # curr_pg_1 = pg
-    # curr_id_2 = curr_id
-    # curr_pg_2 = pg + 1
-    # curr_id_3 = curr_id
-    # curr_pg_3 = pg + 2
-
     queryObject = {
 		"question":question,
         "topic":topic,
@@ -71,15 +54,11 @@ def insertOne(question,topic,answer,options,explain):
         "explain":explain,
         "vectorized":preprocess_sentence(question),
         "vectorized_explain":preprocess_sentence(explain),
-        "sugg_1":[curr_id_1, curr_pg_1],
-        "sugg_2":[curr_id_2, curr_pg_2],
-        "sugg_3":[curr_id_3, curr_pg_3]
 	}
     query = SampleTable.insert_one(queryObject)
     return "Query inserted...!!!"
 
 
-# Make a request to https://codedamn-classrooms.github.io/webscraper-python-codedamn-classroom-website/
 page = requests.get(
     "https://www.sanfoundry.com/data-structure-questions-answers-array-array-operations/")
 soup = BeautifulSoup(page.content, 'html.parser')
@@ -127,10 +106,10 @@ for i in range (1,100):
     print(quest_statement)
 
     insertOne(quest_statement, soup.title.text, correct_opt, options, explain)
-    # print(quest_statement)
-    # print(options)
-    # print(correct_opt)
-    # print(explain)
+    print(quest_statement)
+    print(options)
+    print(correct_opt)
+    print(explain)
  
 # To add questions from user
 # while(True):
