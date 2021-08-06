@@ -93,13 +93,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.post('/upload-file', upload.single('pdf'), async (req,res) => {
-  console.log(req.file);
-  console.log(__dirname)
+  console.log(req.body)
   var read_stream = fs.createReadStream(path.join(req.file.path))
 
-  read_stream.on('end', function() {
+  // read_stream.on('end', function() {
 
-    const form = new FormData();
+  const form = new FormData();
   form.append(req.file.filename, read_stream);
   form.append("subject",req.body.subject)
   form.append("type",req.body.type)
@@ -114,15 +113,11 @@ router.post('/upload-file', upload.single('pdf'), async (req,res) => {
   axios({
       method: 'post',
       url: API_PATH + '/upload-file',
-      data: form.getBuffer(),
+      data: form,
       headers: {
           'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
       },
   })
-
-  })
-  
-  
 
   res.redirect("/notes/"+req.body.type+"?subject="+req.body.subject)
 })
