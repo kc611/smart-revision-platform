@@ -14,7 +14,7 @@ The basic idea for this project is as follows:
 - Questions will be taken randomly at first from an internal question database. Each question will have a topic/keyword associated with it.
 - After the user finishes the quiz all of the wrong responses will be recorded and will be associated with that particular user account.
 - Next time the user generates a quiz, questions similar to those which were previously incorrectly answered will be added along with random questions.
-- These "similar" questions can be found using algorithms such as clustering.
+- These "similar" questions can be found using Glove embeddings + KNN algorithms.
 
 #### Study Material Suggestion algorithm:
 - For generating a suggestion, the general approach would be to take the latest result of a quiz. Then we take all of the wrong questions and generate a list of topics/keywords.
@@ -22,26 +22,3 @@ The basic idea for this project is as follows:
 
 #### Softwares Used: 
 This is a NodeJs based project with a Flask backend API. It uses MongoDB as database for both NodeJs and Flask backends. For frontend this project relies on Tailwind CSS. It will also use Tensorflow and Keras inside Flask API to build customized Quizzes and generate reading suggestions from study material. 
-
-## Project Checklist:
-
-### Front-End:
-- [x] Landing Page UI
-- [x] Basic Dashboard UI
-- [x] Quiz UI
-- [x] Reports UI
-- [ ] Dashboard Animations
-- [ ] Reading Suggestions UI
-- [ ] Notes/Inventory UI
-
-### Back-End (NodeJS):
-- [x] MongoDB database connection
-- [x] User Authentication
-- [x] Quiz Building and Rendering 
-- [x] Quiz Reports Building
-- [ ] Notes Rendering and Uploading
-
-### Back-End (Flask):
-- [x] MongoDB database connection
-- [ ] Quiz Building Algorithm (Currently Quizzes are being built randomly)
-- [ ] Reading Suggestions Building Algorithm
