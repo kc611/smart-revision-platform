@@ -1,5 +1,5 @@
 
-
+# Small script used to add an Admin account of college to the database
 
 confirm = ""
 while 1:

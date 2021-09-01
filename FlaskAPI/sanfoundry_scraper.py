@@ -5,6 +5,8 @@ import time
 import requests
 import ast
 
+# Script used to add questions from sanfoundry websote using web scraping
+
 connection_url = 'mongodb://127.0.0.1:27017'
 
 client = pymongo.MongoClient(connection_url)
