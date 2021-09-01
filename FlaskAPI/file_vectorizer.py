@@ -64,6 +64,7 @@ def vectorize_and_update(pdf_data, user_name, org, curr_subject):
   Database = client.get_database(org)
   SampleTable = Database[f"{curr_subject}_questions"]
   all_questions = list(SampleTable.find({}))
+  all_data = []
 
   useful_pages = [5, 25]
   for i in range(useful_pages[0]-1, useful_pages[1]):
@@ -84,6 +85,7 @@ def vectorize_and_update(pdf_data, user_name, org, curr_subject):
     # Fit the query string onto a nearest neighbour space
     all_vects = np.array(all_vects)
     nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(all_vects)
+    curr_dict = {}
     
     for _question in all_questions:
       query = _question['question']
@@ -95,6 +97,9 @@ def vectorize_and_update(pdf_data, user_name, org, curr_subject):
       dist_sum = np.sum(distances)
       print("Query : ", query)
       print("Distance : ", dist_sum)
+      curr_dict[query] = dist_sum
+    all_data.append(curr_dict)
+  return all_data
 
 
 with open("dsa2.pdf", "rb") as file1:
